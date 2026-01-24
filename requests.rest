@@ -4,10 +4,14 @@ POST http://localhost:3000/post
 Content-Type: application/json
 
 {
-    "title": "vacation",
-    "description": "A fun family trip to the beach."
+    "title": "Reading",
+    "description": "today I am reading books"
 }
 
 ###
 
 GET http://localhost:3000/post
+
+###
+
+GET http://localhost:3000/post/6974d26d987f215ca37d6c87
