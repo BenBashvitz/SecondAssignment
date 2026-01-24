@@ -6,6 +6,6 @@ Content-Type: application/json
 {
     "title": "Vacation",
     "description": "A fun family trip to the beach.",
-    "senderId": "123"
+    "sender": "123"
 
 }

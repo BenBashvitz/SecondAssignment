@@ -1,7 +1,7 @@
 type Post = {
   title: string;
   description: string;
-  senderId: string;
+  sender: string;
 };
 
 export default Post;
