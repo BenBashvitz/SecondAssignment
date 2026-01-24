@@ -16,8 +16,3 @@ GET http://localhost:3000/post
 ###
 
 GET http://localhost:3000/post/6974d77bb9d6f59b625eede6
-
-
-###
-
-GET http://localhost:3000/post?sender=123
