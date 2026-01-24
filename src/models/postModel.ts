@@ -6,8 +6,8 @@ const postSchema = new mongoose.Schema<Post>({
     type: String,
     required: true,
   },
-  releaseYear: {
-    type: Number,
+  description: {
+    type: String,
     required: true,
   },
 });

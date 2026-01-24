@@ -1,7 +1,6 @@
 type Post = {
   title: string;
-  releaseYear: number;
-  _id?: string;
+  description: string;
 };
 
 export default Post;

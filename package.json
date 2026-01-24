@@ -16,6 +16,11 @@
     "mongoose": "^9.1.5"
   },
   "devDependencies": {
-    "@types/express": "^5.0.6"
+    "@eslint/js": "^9.39.2",
+    "@types/express": "^5.0.6",
+    "eslint": "^9.39.2",
+    "nodemon": "^3.1.11",
+    "ts-node": "^10.9.2",
+    "typescript-eslint": "^8.53.1"
   }
 }
