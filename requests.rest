@@ -5,7 +5,7 @@ Content-Type: application/json
 
 {
     "title": "Reading",
-    "description": "today I am reading books"
+    "description": "Today I am reading books"
 }
 
 ###
