@@ -7,3 +7,7 @@ Content-Type: application/json
     "title": "vacation",
     "description": "A fun family trip to the beach."
 }
+
+###
+
+GET http://localhost:3000/post

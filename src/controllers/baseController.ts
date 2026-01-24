@@ -22,6 +22,19 @@ class BaseController<T> {
       res.status(500).send(`An error occurred while creating data`);
     }
   }
+
+  async getAll(req: Request, res: Response) {
+    const filters = req.query;
+
+    try {
+      const data = await this.model.find(filters);
+
+      res.send(data);
+    } catch (error) {
+      console.error("An error occurred while getting all data: ", error);
+      res.status(500).send("An error occurred while getting all data");
+    }
+  }
 }
 
 export default BaseController;
