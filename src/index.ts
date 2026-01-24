@@ -28,7 +28,6 @@ const initApp = async () => {
   });
 
   app.use("/post", postRouter);
-  // app.use("/comment", commentRouter);
 
   return app;
 };
