@@ -20,3 +20,13 @@ GET http://localhost:3000/post/6974d77bb9d6f59b625eede6
 ###
 
 GET http://localhost:3000/post?sender=123
+
+###
+
+POST http://localhost:3000/comment
+Content-Type: application/json
+
+{
+    "postId": "6974d90b8a3dd0993516055c",
+    "message": "Nice post! I like to read too."
+}
