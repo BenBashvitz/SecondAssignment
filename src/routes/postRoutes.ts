@@ -7,4 +7,6 @@ router.post("/", postController.post.bind(postController));
 
 router.get("/", postController.getAll.bind(postController));
 
+router.get("/:id", postController.getById.bind(postController));
+
 export default router;

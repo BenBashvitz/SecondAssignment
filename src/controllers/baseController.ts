@@ -19,7 +19,11 @@ class BaseController<T> {
         `An error occurred while creating the following data ${req.body}: `,
         error,
       );
-      res.status(500).send(`An error occurred while creating data`);
+      res
+        .status(500)
+        .send(
+          `An error occurred while creating the following data: ${req.body}`,
+        );
     }
   }
 
@@ -33,6 +37,30 @@ class BaseController<T> {
     } catch (error) {
       console.error("An error occurred while getting all data: ", error);
       res.status(500).send("An error occurred while getting all data");
+    }
+  }
+
+  async getById(req: Request, res: Response) {
+    const params = req.params;
+
+    try {
+      const data = await this.model.findById(params.id);
+
+      if (data) {
+        res.send(data);
+      } else {
+        res
+          .status(404)
+          .send(`The entity with the id ${params.id} was not found`);
+      }
+    } catch (error) {
+      console.error(
+        `An error occurred while getting data with the id: ${params.id} `,
+        error,
+      );
+      res
+        .status(500)
+        .send(`An error occurred while getting data with the id: ${params.id}`);
     }
   }
 }
