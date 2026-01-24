@@ -10,6 +10,10 @@ const postSchema = new mongoose.Schema<Post>({
     type: String,
     required: true,
   },
+  senderId: {
+    type: String,
+    required: false,
+  },
 });
 
 export default mongoose.model("Post", postSchema);
