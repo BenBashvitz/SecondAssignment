@@ -4,9 +4,9 @@ POST http://localhost:3000/post
 Content-Type: application/json
 
 {
-    "title": "Vacation",
-    "description": "A fun family trip to the beach.",
-    "senderId": "123"
+    "title": "Reading a book",
+    "description": "A fascinating journey into the world of reading.",
+    "sender": "123"
 }
 
 ###
@@ -15,4 +15,9 @@ GET http://localhost:3000/post
 
 ###
 
-GET http://localhost:3000/post/6974d26d987f215ca37d6c87
+GET http://localhost:3000/post/6974d77bb9d6f59b625eede6
+
+
+###
+
+GET http://localhost:3000/post?sender=123
