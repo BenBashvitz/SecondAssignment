@@ -4,8 +4,10 @@ POST http://localhost:3000/post
 Content-Type: application/json
 
 {
-    "title": "vacation",
-    "description": "A fun family trip to the beach."
+    "title": "Vacation",
+    "description": "A fun family trip to the beach.",
+    "senderId": "123"
+
 }
 
 ###
