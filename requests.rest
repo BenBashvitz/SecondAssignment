@@ -55,3 +55,8 @@ Content-Type: application/json
     "postId": "6974d90b8a3dd0993516055c",
     "message": "Nice post! I like to read too."
 }
+
+###
+
+GET http://localhost:3000/comment?postId=6974d90b8a3dd0993516055c
+
