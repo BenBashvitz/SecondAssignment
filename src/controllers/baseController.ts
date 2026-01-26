@@ -87,6 +87,26 @@ class BaseController<T> {
       res.status(500).send(`An error occurred while updating data with the id: ${id}`);
     }
   }
+
+  async delete(req: Request, res: Response) {
+    const { id } = req.params;
+
+    try {
+      const deletedData = await this.model.findByIdAndDelete(id);
+
+      if (deletedData) {
+        res.status(200).json({ message: "Entity deleted successfully", data: deletedData });
+      } else {
+        res.status(404).send(`The entity with the id ${id} was not found`);
+      }
+    } catch (error) {
+      console.error(
+          `An error occurred while deleting data with the id: ${id}`,
+          error
+      );
+      res.status(500).send(`An error occurred while deleting data with the id: ${id}`);
+    }
+  }
 }
 
 export default BaseController;
