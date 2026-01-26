@@ -23,6 +23,17 @@ GET http://localhost:3000/post?sender=123
 
 ###
 
+PUT http://localhost:3000/post/6974d77bb9d6f59b625eede6
+Content-Type: application/json
+
+{
+  "title": "Reading a book",
+  "description": "A fascinating journey into the world of reading.",
+  "sender": "123"
+}
+
+###
+
 POST http://localhost:3000/comment
 Content-Type: application/json
 
