@@ -9,4 +9,6 @@ router.get("/", commentController.getAll.bind(commentController));
 
 router.put("/:id", commentController.put.bind(commentController));
 
+router.delete("/:id", commentController.delete.bind(commentController));
+
 export default router;
