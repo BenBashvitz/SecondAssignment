@@ -48,6 +48,11 @@ GET http://localhost:3000/comment
 
 ###
 
+
+GET http://localhost:3000/comment?postId=6974d90b8a3dd0993516055c
+
+###
+
 PUT http://localhost:3000/comment/6974d77bb9d6f59b625eede6
 Content-Type: application/json
 
@@ -55,8 +60,4 @@ Content-Type: application/json
     "postId": "6974d90b8a3dd0993516055c",
     "message": "Nice post! I like to read too."
 }
-
-###
-
-GET http://localhost:3000/comment?postId=6974d90b8a3dd0993516055c
 
