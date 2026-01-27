@@ -4,7 +4,15 @@ POST http://localhost:3000/post
 Content-Type: application/json
 
 {
-    "title": "Vacation12",
-    "description": "A fun family trip to the beach.",
+    "title": "Reading a book",
+    "description": "A fascinating journey into the world of reading.",
     "sender": "123"
 }
+
+###
+
+GET http://localhost:3000/post
+
+###
+
+GET http://localhost:3000/post/6974d77bb9d6f59b625eede6
