@@ -34,10 +34,6 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:3000/post/6974d77bb9d6f59b625eede6
-
-###
-
 POST http://localhost:3000/comment
 Content-Type: application/json
 
