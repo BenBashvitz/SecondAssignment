@@ -1,6 +1,8 @@
+import { Types } from "mongoose";
+
 type Comment = {
   message: string;
-  postId: string;
+  postId: Types.ObjectId;
 };
 
 export default Comment;
