@@ -27,6 +27,17 @@ class BaseController<T> {
     }
   }
 
+  async getAll(_req: Request, res: Response) {
+    try {
+      const data = await this.model.find();
+
+      res.send(data);
+    } catch (error) {
+      console.error("An error occurred while getting all data: ", error);
+      res.status(500).send("An error occurred while getting all data");
+    }
+  }
+
   async getById(req: Request, res: Response) {
     const params = req.params;
 
