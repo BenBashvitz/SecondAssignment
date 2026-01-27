@@ -66,3 +66,53 @@ describe("UserController - Update (put)", () => {
         expect(res.send).toHaveBeenCalledWith("An error occurred while updating data with the id: 123");
     });
 });
+
+describe("UserController - Delete (delete)", () => {
+    let req: any;
+    let res: any;
+
+    beforeEach(() => {
+        req = {
+            params: { id: "123" }
+        };
+        res = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn(),
+            send: jest.fn()
+        };
+        jest.clearAllMocks();
+    });
+
+    it("should delete a user successfully and return 200", async () => {
+        const mockDeletedUser = { _id: "123", username: "deletedUser" };
+
+        (userModel.findByIdAndDelete as jest.Mock).mockResolvedValue(mockDeletedUser);
+
+        await userController.delete(req, res);
+
+        expect(userModel.findByIdAndDelete).toHaveBeenCalledWith("123");
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith({ message: "Entity deleted successfully", data: mockDeletedUser });
+    });
+
+    it("should return 404 if user not found", async () => {
+        (userModel.findByIdAndDelete as jest.Mock).mockResolvedValue(null);
+
+        await userController.delete(req, res);
+
+        expect(userModel.findByIdAndDelete).toHaveBeenCalledWith("123");
+        expect(res.status).toHaveBeenCalledWith(404);
+        expect(res.send).toHaveBeenCalledWith("The entity with the id 123 was not found");
+    });
+
+    it("should return 500 if an error occurs", async () => {
+        const errorMessage = "Database error";
+        (userModel.findByIdAndDelete as jest.Mock).mockRejectedValue(new Error(errorMessage));
+
+        await userController.delete(req, res);
+
+        expect(userModel.findByIdAndDelete).toHaveBeenCalledWith("123");
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.send).toHaveBeenCalledWith("An error occurred while deleting data with the id: 123");
+    });
+});

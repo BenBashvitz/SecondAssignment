@@ -39,4 +39,29 @@ const router = express.Router();
  */
 router.put("/:id", userController.put.bind(userController));
 
+/**
+ * @swagger
+ * /user/{id}:
+ *   delete:
+ *     summary: Delete a user by ID
+ *     description: Delete a user
+ *     tags:
+ *       - Users
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The user ID
+ *     responses:
+ *       200:
+ *         description: User deleted successfully
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ */
+router.delete("/:id", userController.delete.bind(userController));
+
 export default router;
