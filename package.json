@@ -1,0 +1,26 @@
+{
+  "name": "firstassignment",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "tsc && node --env-file=.env.dev dist/server.js",
+    "dev": "nodemon src/server.ts"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "mongoose": "^9.1.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@types/express": "^5.0.6",
+    "eslint": "^9.39.2",
+    "nodemon": "^3.1.11",
+    "ts-node": "^10.9.2",
+    "typescript-eslint": "^8.53.1"
+  }
+}

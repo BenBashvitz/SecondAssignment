@@ -1,0 +1,10 @@
+###
+
+POST http://localhost:3000/post
+Content-Type: application/json
+
+{
+    "title": "Vacation12",
+    "description": "A fun family trip to the beach.",
+    "sender": "123"
+}
