@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
 import postRouter from "./routes/postRoutes";
+import commentRouter from "./routes/commentRoutes";
 
 dotenv.config({ path: ".env.dev" });
 
@@ -28,6 +29,7 @@ const initApp = async () => {
   });
 
   app.use("/post", postRouter);
+  app.use("/comment", commentRouter);
 
   return app;
 };

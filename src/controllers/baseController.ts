@@ -27,9 +27,11 @@ class BaseController<T> {
     }
   }
 
-  async getAll(_req: Request, res: Response) {
+  async getAll(req: Request, res: Response) {
+    const filters = req.query;
+
     try {
-      const data = await this.model.find();
+      const data = await this.model.find(filters);
 
       res.send(data);
     } catch (error) {
