@@ -39,7 +39,8 @@ Content-Type: application/json
 
 {
     "postId": "6974d90b8a3dd0993516055c",
-    "message": "Nice post! I like to read too."
+    "message": "Nice post! I like to read too.",
+    "sender": "6790e0c8046777c6670a80e1"
 }
 
 ###
