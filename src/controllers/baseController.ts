@@ -75,7 +75,7 @@ class BaseController<T> {
       });
 
       if (updatedData) {
-        res.status(200).json(updatedData);
+        res.status(201).json(updatedData);
       } else {
         res.status(404).send(`The entity with the id ${id} was not found`);
       }
