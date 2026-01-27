@@ -4,9 +4,9 @@ POST http://localhost:3000/post
 Content-Type: application/json
 
 {
-    "title": "Reading a book",
+    "title": "Reading a book1",
     "description": "A fascinating journey into the world of reading.",
-    "sender": "123"
+    "sender": "124"
 }
 
 ###
@@ -15,11 +15,11 @@ GET http://localhost:3000/post
 
 ###
 
-GET http://localhost:3000/post/6974d77bb9d6f59b625eede6
+GET http://localhost:3000/post/6978b9c696f1736f495554fa
 
 ###
 
-GET http://localhost:3000/post?sender=123
+GET http://localhost:3000/post?sender=124
 
 ###
 
