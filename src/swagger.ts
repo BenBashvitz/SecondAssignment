@@ -17,6 +17,24 @@ const options: swaggerJsdoc.Options = {
     ],
     components: {
       schemas: {
+        User: {
+          type: "object",
+          properties: {
+            username: {
+              type: "string",
+              description: "The user's username",
+            },
+            email: {
+              type: "string",
+              description: "The user's email",
+            },
+            password: {
+              type: "string",
+              description: "The user's password",
+            },
+          },
+          required: ["username", "email", "password"],
+        },
         Error: {
           type: "object",
           properties: {
