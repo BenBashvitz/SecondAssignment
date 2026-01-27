@@ -3,7 +3,8 @@ import Comment from "../types/comment";
 
 const commentSchema = new mongoose.Schema<Comment>({
   postId: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Post",
     required: true,
   },
   message: {
