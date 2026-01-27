@@ -61,6 +61,30 @@ class BaseController<T> {
         .send(`An error occurred while getting data with the id: ${params.id}`);
     }
   }
+
+  async put(req: Request, res: Response) {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    try {
+      const updatedData = await this.model.findByIdAndUpdate(id, updateData, {
+        new: true,
+        runValidators: true,
+      });
+
+      if (updatedData) {
+        res.status(201).json(updatedData);
+      } else {
+        res.status(404).send(`The entity with the id ${id} was not found`);
+      }
+    } catch (error) {
+      console.error(
+          `An error occurred while updating data with the id: ${id}`,
+          error
+      );
+      res.status(500).send(`An error occurred while updating data with the id: ${id}`);
+    }
+  }
 }
 
 export default BaseController;
