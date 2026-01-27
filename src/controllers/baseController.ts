@@ -27,9 +27,11 @@ class BaseController<T> {
     }
   }
 
-  async getAll(_req: Request, res: Response) {
+  async getAll(req: Request, res: Response) {
+    const filters = req.query;
+
     try {
-      const data = await this.model.find();
+      const data = await this.model.find(filters);
 
       res.send(data);
     } catch (error) {
@@ -79,10 +81,12 @@ class BaseController<T> {
       }
     } catch (error) {
       console.error(
-          `An error occurred while updating data with the id: ${id}`,
-          error
+        `An error occurred while updating data with the id: ${id}`,
+        error,
       );
-      res.status(500).send(`An error occurred while updating data with the id: ${id}`);
+      res
+        .status(500)
+        .send(`An error occurred while updating data with the id: ${id}`);
     }
   }
 
@@ -93,16 +97,20 @@ class BaseController<T> {
       const deletedData = await this.model.findByIdAndDelete(id);
 
       if (deletedData) {
-        res.status(200).json({ message: "Entity deleted successfully", data: deletedData });
+        res
+          .status(200)
+          .json({ message: "Entity deleted successfully", data: deletedData });
       } else {
         res.status(404).send(`The entity with the id ${id} was not found`);
       }
     } catch (error) {
       console.error(
-          `An error occurred while deleting data with the id: ${id}`,
-          error
+        `An error occurred while deleting data with the id: ${id}`,
+        error,
       );
-      res.status(500).send(`An error occurred while deleting data with the id: ${id}`);
+      res
+        .status(500)
+        .send(`An error occurred while deleting data with the id: ${id}`);
     }
   }
 }
