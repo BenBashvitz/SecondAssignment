@@ -22,6 +22,12 @@ describe("User Model Test Suite", () => {
       expect(response.body).toMatchObject(user);
     }
   });
+
+  it("should retrieve all users", async () => {
+    const response = await request(app).get("/user");
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(USERS.length);
+  });
 });
 
 afterAll(async () => {

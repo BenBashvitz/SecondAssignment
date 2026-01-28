@@ -45,4 +45,28 @@ const router = express.Router();
  */
 router.post("/", userController.post.bind(userController));
 
+/**
+ * @swagger
+ * /user:
+ *   get:
+ *     summary: Get all users
+ *     tags: [Users]
+ *     responses:
+ *       200:
+ *         description: List of all users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.get("/", userController.getAll.bind(userController));
+
 export default router;
