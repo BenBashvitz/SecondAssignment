@@ -79,3 +79,7 @@ Content-Type: application/json
 ###
 
 GET http://localhost:3000/user
+
+###
+
+GET http://localhost:3000/user/697a78c9437f1b91bae9a42d
