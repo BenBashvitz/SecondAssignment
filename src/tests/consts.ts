@@ -1,6 +1,6 @@
-import { User } from "../types/user";
+import { UserInput } from "../types/user";
 
-export const USERS: User[] = [
+export const USERS: UserInput[] = [
   {
     email: "example1@example.com",
     username: "example1User",
