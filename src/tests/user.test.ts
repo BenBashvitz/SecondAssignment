@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import initApp from "../src/index";
-import userModel from "../src/models/userModel";
+import initApp from "../index";
+import userModel from "../models/userModel";
 import request from "supertest";
 import { Express } from "express";
 import { USERS } from "./consts";
