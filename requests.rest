@@ -86,3 +86,7 @@ Content-Type: application/json
     "username": "example1User",
     "password": "example1Pass"
 }
+
+###
+
+GET http://localhost:3000/user

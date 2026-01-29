@@ -47,6 +47,30 @@ router.post("/", userController.post.bind(userController));
 
 /**
  * @swagger
+ * /user:
+ *   get:
+ *     summary: Get all users
+ *     tags: [Users]
+ *     responses:
+ *       200:
+ *         description: List of all users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+
+router.get("/", userController.getAll.bind(userController));
+
+/**
  * /user/{id}:
  *   put:
  *     description: Update user details
@@ -83,7 +107,7 @@ router.post("/", userController.post.bind(userController));
  *               $ref: '#/components/schemas/User'
  *       404:
  *         description: User not found
- *         content: 
+ *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'

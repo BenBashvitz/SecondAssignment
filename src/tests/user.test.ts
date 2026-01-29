@@ -34,6 +34,14 @@ describe("Create user", () => {
   });
 });
 
+describe("Get users", () => {
+  it("should retrieve all users", async () => {
+    const response = await request(app).get("/user");
+    expect(response.status).toBe(200);
+    expect(response.body.length).toBe(USERS.length);
+  });
+});
+
 describe("Update user", () => {
   let userId: string;
 
@@ -47,9 +55,11 @@ describe("Update user", () => {
     const updatedData = {
       username: "updatedUser",
       email: "updatedEmail",
-      password: "updatedPassword"
+      password: "updatedPassword",
     };
-    const response = await request(app).put(`/user/${userId}`).send(updatedData);
+    const response = await request(app)
+      .put(`/user/${userId}`)
+      .send(updatedData);
 
     expect(response.status).toBe(201);
     expect(response.body.username).toBe(updatedData.username);
@@ -60,22 +70,28 @@ describe("Update user", () => {
     const updatedData = {
       username: "updatedUser",
       email: "updatedEmail",
-      password: "updatedPassword"
+      password: "updatedPassword",
     };
-    const response = await request(app).put(`/user/${nonExistentId}`).send(updatedData);
+    const response = await request(app)
+      .put(`/user/${nonExistentId}`)
+      .send(updatedData);
 
     expect(response.status).toBe(404);
   });
 
   it("should return 500 if an error occurs", async () => {
-    jest.spyOn(userModel, "findByIdAndUpdate").mockRejectedValueOnce(new Error("Database error"));
+    jest
+      .spyOn(userModel, "findByIdAndUpdate")
+      .mockRejectedValueOnce(new Error("Database error"));
 
     const updatedData = {
       username: "updatedUser",
       email: "updatedEmail",
-      password: "updatedPassword"
+      password: "updatedPassword",
     };
-    const response = await request(app).put(`/user/${userId}`).send(updatedData);
+    const response = await request(app)
+      .put(`/user/${userId}`)
+      .send(updatedData);
 
     expect(response.status).toBe(500);
   });
