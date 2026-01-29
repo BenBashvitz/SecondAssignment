@@ -23,7 +23,7 @@ const router = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/User'
  *       500:
- *         description: Server error
+ *         description: Internal Server error
  *         content:
  *           application/json:
  *             schema:
@@ -35,10 +35,9 @@ router.post("/", userController.post.bind(userController));
  * @swagger
  * /user/{id}:
  *   put:
- *     summary: Update a user by ID
  *     description: Update user details
  *     tags:
- *       - Users
+ *       [Users]
  *     parameters:
  *       - in: path
  *         name: id
@@ -60,7 +59,7 @@ router.post("/", userController.post.bind(userController));
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *       500:
- *         description: Server error
+ *         description: Internal Server error
  *         content:
  *           application/json:
  *             schema:
