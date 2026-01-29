@@ -62,6 +62,10 @@ router.post("/", userController.post.bind(userController));
  *                 $ref: '#/components/schemas/User'
  *       500:
  *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 
 router.get("/", userController.getAll.bind(userController));
