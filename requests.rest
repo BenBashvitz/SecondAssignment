@@ -78,6 +78,10 @@ Content-Type: application/json
 
 ###
 
+GET http://localhost:3000/user
+
+###
+
 PUT http://localhost:3000/user/6974d77bb9d6f59b625eede6
 Content-Type: application/json
 
