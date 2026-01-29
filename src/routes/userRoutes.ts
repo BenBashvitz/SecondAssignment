@@ -36,8 +36,8 @@ const router = express.Router();
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/User'
- *       400:
- *         description: Bad request - Invalid input
+ *       500:
+ *         description: Server error
  *         content:
  *           application/json:
  *             schema:
