@@ -97,6 +97,40 @@ describe("Update user", () => {
   });
 });
 
+describe("Delete user", () => {
+  let userId: string;
+
+  beforeEach(async () => {
+    await userModel.deleteMany();
+    const user = await userModel.create(USERS[0]);
+    userId = user._id.toString();
+  });
+
+  it("should delete a user successfully and return 200", async () => {
+    const response = await request(app).delete(`/user/${userId}`);
+
+    expect(response.status).toBe(200);
+
+    const deletedUser = await userModel.findById(userId);
+    expect(deletedUser).toBeNull();
+  });
+
+  it("should return 404 if user not found", async () => {
+    const nonExistentId = new mongoose.Types.ObjectId().toString();
+    const response = await request(app).delete(`/user/${nonExistentId}`);
+
+    expect(response.status).toBe(404);
+  });
+
+  it("should return 500 if an error occurs", async () => {
+    jest.spyOn(userModel, "findByIdAndDelete").mockRejectedValueOnce(new Error("Database error"));
+
+    const response = await request(app).delete(`/user/${userId}`);
+
+    expect(response.status).toBe(500);
+  });
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
 });

@@ -120,4 +120,39 @@ router.get("/", userController.getAll.bind(userController));
  */
 router.put("/:id", userController.put.bind(userController));
 
+/**
+ * @swagger
+ * /user/{id}:
+ *   delete:
+ *     description: Delete a user by ID
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The user ID
+ *     responses:
+ *       200:
+ *         description: User deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.delete("/:id", userController.delete.bind(userController));
+
 export default router;
