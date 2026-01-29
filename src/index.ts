@@ -5,8 +5,8 @@ import mongoose from "mongoose";
 import swaggerUi from "swagger-ui-express";
 import commentRouter from "./routes/commentRoutes";
 import postRouter from "./routes/postRoutes";
-import swaggerSpec from "./swagger";
 import userRouter from "./routes/userRoutes";
+import swaggerSpec from "./swagger";
 
 dotenv.config({ path: ".env.dev" });
 
