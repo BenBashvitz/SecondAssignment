@@ -7,6 +7,7 @@ import commentRouter from "./routes/commentRoutes";
 import postRouter from "./routes/postRoutes";
 import userRouter from "./routes/userRoutes";
 import swaggerSpec from "./swagger";
+import userRouter from "./routes/userRoutes";
 
 dotenv.config({ path: ".env.dev" });
 

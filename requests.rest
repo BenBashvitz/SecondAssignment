@@ -75,3 +75,14 @@ Content-Type: application/json
   "username": "exmaple_user",
   "password": "secret_password"
 }
+
+###
+
+POST http://localhost:3000/user
+Content-Type: application/json
+
+{
+    "email": "example1@example.com",
+    "username": "example1User",
+    "password": "example1Pass"
+}

@@ -1,4 +1,7 @@
 import swaggerJsdoc from "swagger-jsdoc";
+import dotenv from "dotenv";
+
+dotenv.config({ path: ".env.dev" });
 
 const options: swaggerJsdoc.Options = {
   definition: {
@@ -19,21 +22,28 @@ const options: swaggerJsdoc.Options = {
       schemas: {
         User: {
           type: "object",
+          required: ["email", "username", "password"],
           properties: {
-            username: {
+            _id: {
               type: "string",
-              description: "The user's username",
+              description: "User ID",
             },
             email: {
               type: "string",
-              description: "The user's email",
+              description: "User email address",
+              example: "user@example.com",
+            },
+            username: {
+              type: "string",
+              description: "Username",
+              example: "exampleUser",
             },
             password: {
               type: "string",
-              description: "The user's password",
+              description: "User password",
+              example: "password123",
             },
           },
-          required: ["username", "email", "password"],
         },
         Error: {
           type: "object",
