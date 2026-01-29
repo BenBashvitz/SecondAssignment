@@ -45,6 +45,29 @@ const options: swaggerJsdoc.Options = {
             },
           },
         },
+        Comment: {
+          type: "object",
+          required: ["message", "sender", "postId"],
+          properties: {
+            _id: {
+              type: "string",
+              description: "Comment ID",
+            },
+            message: {
+              type: "string",
+              description: "The comment content",
+              example: "This is a great post!",
+            },
+            sender: {
+              type: "string",
+              description: "ID of the user who made the comment",
+            },
+            postId: {
+              type: "string",
+              description: "ID of the post the comment belongs to",
+            },
+          },
+        },
         Error: {
           type: "object",
           properties: {

@@ -1,4 +1,13 @@
 import User from "../types/user";
+import Post from "../types/post";
+
+export const POSTS: Post[] = [
+  {
+    title: "Test Post",
+    description: "Test Description",
+    sender: "testSenderId",
+  },
+];
 
 export const USERS: User[] = [
   {
