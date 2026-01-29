@@ -36,12 +36,6 @@ const router = express.Router();
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/User'
- *       400:
- *         description: Bad request - Invalid input
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Error'
  */
 router.post("/", userController.post.bind(userController));
 

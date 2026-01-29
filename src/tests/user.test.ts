@@ -13,7 +13,7 @@ beforeAll(async () => {
   await userModel.deleteMany();
 });
 
-describe("User Model Test Suite", () => {
+describe("Create user", () => {
   it("should create and save a user successfully", async () => {
     for (const user of USERS) {
       const response = await request(app).post("/user").send(user);
@@ -21,6 +21,16 @@ describe("User Model Test Suite", () => {
       expect(response.status).toBe(201);
       expect(response.body).toMatchObject(user);
     }
+  });
+
+  it("should fail to create a user with missing required fields", async () => {
+    const incompleteUser = {
+      email: " ",
+    };
+
+    const response = await request(app).post("/user").send(incompleteUser);
+
+    expect(response.status).toBe(500);
   });
 });
 
