@@ -7,7 +7,7 @@ const router = express.Router();
  * @swagger
  * /user:
  *   post:
- *     summary: Create a new user
+ *     description: Create a new user
  *     tags: [Users]
  *     requestBody:
  *       required: true
@@ -36,8 +36,8 @@ const router = express.Router();
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/User'
- *       400:
- *         description: Bad request - Invalid input
+ *       500:
+ *         description: Internal Server error
  *         content:
  *           application/json:
  *             schema:
@@ -67,6 +67,7 @@ router.post("/", userController.post.bind(userController));
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
+
 router.get("/", userController.getAll.bind(userController));
 
 /**
@@ -84,7 +85,7 @@ router.get("/", userController.getAll.bind(userController));
  *         description: The user ID
  *     responses:
  *       200:
- *         description: User found
+ *         description: User found successfully
  *         content:
  *           application/json:
  *             schema:
@@ -95,7 +96,100 @@ router.get("/", userController.getAll.bind(userController));
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.get("/:id", userController.getById.bind(userController));
+
+/**
+ * @swagger
+ * /user/{id}:
+ *   put:
+ *     description: Update user details
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: user@example.com
+ *               username:
+ *                 type: string
+ *                 example: exampleUser
+ *               password:
+ *                 type: string
+ *                 example: password123
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The user ID
+ *     responses:
+ *       200:
+ *         description: User updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *
+ *       500:
+ *         description: Internal Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.put("/:id", userController.put.bind(userController));
+
+/**
+ * @swagger
+ * /user/{id}:
+ *   delete:
+ *     description: Delete a user by ID
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The user ID
+ *     responses:
+ *       200:
+ *         description: User deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.delete("/:id", userController.delete.bind(userController));
 
 export default router;
