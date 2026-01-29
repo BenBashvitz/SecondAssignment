@@ -1,4 +1,3 @@
-
 import express from "express";
 import userController from "../controllers/userController";
 
@@ -6,12 +5,68 @@ const router = express.Router();
 
 /**
  * @swagger
+ * /user:
+ *   post:
+ *     description: Create a new user
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - username
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: user@example.com
+ *               username:
+ *                 type: string
+ *                 example: exampleUser
+ *               password:
+ *                 type: string
+ *                 example: password123
+ *     responses:
+ *       201:
+ *         description: User created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       500:
+ *         description: Internal Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.post("/", userController.post.bind(userController));
+
+/**
+ * @swagger
  * /user/{id}:
  *   put:
- *     summary: Update a user by ID
  *     description: Update user details
- *     tags:
- *       - Users
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: user@example.com
+ *               username:
+ *                 type: string
+ *                 example: exampleUser
+ *               password:
+ *                 type: string
+ *                 example: password123
  *     parameters:
  *       - in: path
  *         name: id
@@ -19,23 +74,25 @@ const router = express.Router();
  *         schema:
  *           type: string
  *         description: The user ID
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/User'
  *     responses:
- *       201:
- *         description: The updated user
+ *       200:
+ *         description: User updated successfully
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/User'
  *       404:
  *         description: User not found
+ *         content: 
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       500:
- *         description: Server error
+ *         description: Internal Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.put("/:id", userController.put.bind(userController));
 
@@ -43,10 +100,8 @@ router.put("/:id", userController.put.bind(userController));
  * @swagger
  * /user/{id}:
  *   delete:
- *     summary: Delete a user by ID
- *     description: Delete a user
- *     tags:
- *       - Users
+ *     description: Delete a user by ID
+ *     tags: [Users]
  *     parameters:
  *       - in: path
  *         name: id
@@ -57,10 +112,22 @@ router.put("/:id", userController.put.bind(userController));
  *     responses:
  *       200:
  *         description: User deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
  *       404:
  *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       500:
- *         description: Server error
+ *         description: Internal Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  */
 router.delete("/:id", userController.delete.bind(userController));
 
