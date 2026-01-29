@@ -7,7 +7,7 @@ const router = express.Router();
  * @swagger
  * /user:
  *   post:
- *     summary: Create a new user
+ *     description: Create a new user
  *     tags: [Users]
  *     requestBody:
  *       required: true
@@ -37,7 +37,7 @@ const router = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/User'
  *       500:
- *         description: Server error
+ *         description: Internal Server error
  *         content:
  *           application/json:
  *             schema:
@@ -62,11 +62,58 @@ router.post("/", userController.post.bind(userController));
  *                 $ref: '#/components/schemas/User'
  *       500:
  *         description: Internal server error
+ */
+
+router.get("/", userController.getAll.bind(userController));
+
+/**
+ * /user/{id}:
+ *   put:
+ *     description: Update user details
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: user@example.com
+ *               username:
+ *                 type: string
+ *                 example: exampleUser
+ *               password:
+ *                 type: string
+ *                 example: password123
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The user ID
+ *     responses:
+ *       200:
+ *         description: User updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal Server error
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.get("/", userController.getAll.bind(userController));
+router.put("/:id", userController.put.bind(userController));
 
 export default router;
