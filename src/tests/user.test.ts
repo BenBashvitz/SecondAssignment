@@ -44,7 +44,11 @@ describe("Update user", () => {
   });
 
   it("should update a user successfully and return 201", async () => {
-    const updatedData = { username: "updatedUser" };
+    const updatedData = {
+      username: "updatedUser",
+      email: "updatedEmail",
+      password: "updatedPassword"
+    };
     const response = await request(app).put(`/user/${userId}`).send(updatedData);
 
     expect(response.status).toBe(201);
@@ -53,7 +57,11 @@ describe("Update user", () => {
 
   it("should return 404 if user not found", async () => {
     const nonExistentId = new mongoose.Types.ObjectId().toString();
-    const updatedData = { username: "updatedUser" };
+    const updatedData = {
+      username: "updatedUser",
+      email: "updatedEmail",
+      password: "updatedPassword"
+    };
     const response = await request(app).put(`/user/${nonExistentId}`).send(updatedData);
 
     expect(response.status).toBe(404);
@@ -62,7 +70,11 @@ describe("Update user", () => {
   it("should return 500 if an error occurs", async () => {
     jest.spyOn(userModel, "findByIdAndUpdate").mockRejectedValueOnce(new Error("Database error"));
 
-    const updatedData = { username: "updatedUser" };
+    const updatedData = {
+      username: "updatedUser",
+      email: "updatedEmail",
+      password: "updatedPassword"
+    };
     const response = await request(app).put(`/user/${userId}`).send(updatedData);
 
     expect(response.status).toBe(500);

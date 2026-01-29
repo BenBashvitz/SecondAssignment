@@ -7,14 +7,28 @@ const router = express.Router();
  * @swagger
  * /user:
  *   post:
- *     summary: Create a new user
+ *     description: Create a new user
  *     tags: [Users]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/User'
+ *             type: object
+ *             required:
+ *               - email
+ *               - username
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: user@example.com
+ *               username:
+ *                 type: string
+ *                 example: exampleUser
+ *               password:
+ *                 type: string
+ *                 example: password123
  *     responses:
  *       201:
  *         description: User created successfully
@@ -36,8 +50,23 @@ router.post("/", userController.post.bind(userController));
  * /user/{id}:
  *   put:
  *     description: Update user details
- *     tags:
- *       [Users]
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: user@example.com
+ *               username:
+ *                 type: string
+ *                 example: exampleUser
+ *               password:
+ *                 type: string
+ *                 example: password123
  *     parameters:
  *       - in: path
  *         name: id
