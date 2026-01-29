@@ -79,4 +79,19 @@ Content-Type: application/json
 
 ###
 
+POST http://localhost:3000/user
+Content-Type: application/json
+
+{
+    "email": "example1@example.com",
+    "username": "example1User",
+    "password": "example1Pass"
+}
+
+###
+
+GET http://localhost:3000/user
+
+###
+
 DELETE http://localhost:3000/user/6974d77bb9d6f59b625eede6
