@@ -94,4 +94,7 @@ GET http://localhost:3000/user
 
 ###
 
+GET http://localhost:3000/user/697a78c9437f1b91bae9a42d
+
+###
 DELETE http://localhost:3000/user/6974d77bb9d6f59b625eede6

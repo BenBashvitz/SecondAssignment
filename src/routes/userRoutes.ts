@@ -71,6 +71,42 @@ router.post("/", userController.post.bind(userController));
 router.get("/", userController.getAll.bind(userController));
 
 /**
+ * @swagger
+ * /user/{id}:
+ *   get:
+ *     summary: Get a user by ID
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The user ID
+ *     responses:
+ *       200:
+ *         description: User found successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       500:
+ *         description: Internal Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+router.get("/:id", userController.getById.bind(userController));
+
+/**
+ * @swagger
  * /user/{id}:
  *   put:
  *     description: Update user details
@@ -111,6 +147,7 @@ router.get("/", userController.getAll.bind(userController));
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *
  *       500:
  *         description: Internal Server error
  *         content:
