@@ -8,7 +8,9 @@
   "main": "index.js",
   "scripts": {
     "start": "tsc && node --env-file=.env.dev dist/server.js",
-    "dev": "nodemon src/server.ts"
+    "dev": "nodemon src/server.ts",
+    "test": "jest --detectOpenHandles",
+    "test-user": "jest --detectOpenHandles src/tests/user.test.ts"
   },
   "dependencies": {
     "dotenv": "^17.2.3",
