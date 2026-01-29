@@ -67,6 +67,17 @@ DELETE http://localhost:3000/comment/6974d77bb9d6f59b625eede6
 
 ###
 
+PUT http://localhost:3000/user/6974d77bb9d6f59b625eede6
+Content-Type: application/json
+
+{
+  "email": "example@gmail.com",
+  "username": "exmaple_user",
+  "password": "secret_password"
+}
+
+###
+
 POST http://localhost:3000/user
 Content-Type: application/json
 
@@ -79,17 +90,6 @@ Content-Type: application/json
 ###
 
 GET http://localhost:3000/user
-
-###
-
-PUT http://localhost:3000/user/6974d77bb9d6f59b625eede6
-Content-Type: application/json
-
-{
-  "email": "example@gmail.com",
-  "username": "exmaple_user",
-  "password": "secret_password"
-}
 
 ###
 
