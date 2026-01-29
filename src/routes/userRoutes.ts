@@ -68,5 +68,4 @@ router.post("/", userController.post.bind(userController));
  */
 router.put("/:id", userController.put.bind(userController));
 
-
 export default router;
