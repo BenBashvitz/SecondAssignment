@@ -58,7 +58,6 @@ describe("Create comment", () => {
 });
 
 describe("Get comments", () => {
-
     beforeEach(async () => {
         await commentModel.deleteMany();
         await commentModel.create(COMMENTS);
