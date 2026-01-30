@@ -1,15 +1,16 @@
-import User from "../types/user";
+import { UserInput } from "../types/user";
 import Post from "../types/post";
+import mongoose from "mongoose";
 
 export const POSTS: Post[] = [
   {
     title: "Test Post",
     description: "Test Description",
-    sender: "testSenderId",
+    sender: new mongoose.Types.ObjectId(),
   },
 ];
 
-export const USERS: User[] = [
+export const USERS: UserInput[] = [
   {
     email: "example1@example.com",
     username: "example1User",
