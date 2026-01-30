@@ -7,6 +7,7 @@ import postModel from "../models/postModel";
 import commentModel from "../models/commentModel";
 import { USERS, POSTS, COMMENTS } from "./consts";
 import { Express } from "express";
+import { cleanupBeforeCommentTests } from "./utils";
 
 let app: Express;
 let userIds: string[];
@@ -59,13 +60,7 @@ describe("Create comment", () => {
 
 describe("Get comments", () => {
     beforeEach(async () => {
-        await commentModel.deleteMany();
-        const commentsWithSenderId = COMMENTS.map((comment, index) => ({
-            ...comment,
-            sender: userIds[index],
-            postId: postIds[index],
-        }));
-        await commentModel.create(commentsWithSenderId);
+        await cleanupBeforeCommentTests(commentModel, COMMENTS, userIds, postIds);
     });
 
     it("should get all comments", async () => {
@@ -81,13 +76,8 @@ describe("Update comment", () => {
     let commentId: string;
 
     beforeEach(async () => {
-        await commentModel.deleteMany();
-        const comment = await commentModel.create({
-            ...COMMENTS[0],
-            sender: userIds[0],
-            postId: postIds[0],
-        });
-        commentId = comment._id.toString();
+        const comments = await cleanupBeforeCommentTests(commentModel, [COMMENTS[0]], userIds, postIds);
+        commentId = comments[0]._id.toString();
     });
 
     it("should update a comment", async () => {
@@ -141,13 +131,8 @@ describe("Delete comment", () => {
     let commentId: string;
 
     beforeEach(async () => {
-        await commentModel.deleteMany();
-        const comment = await commentModel.create({
-            ...COMMENTS[0],
-            sender: userIds[0],
-            postId: postIds[0],
-        });
-        commentId = comment._id.toString();
+        const comments = await cleanupBeforeCommentTests(commentModel, [COMMENTS[0]], userIds, postIds);
+        commentId = comments[0]._id.toString();
     });
 
     it("should delete a comment", async () => {
