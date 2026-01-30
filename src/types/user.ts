@@ -1,4 +1,4 @@
-type User = {
+export type User = {
   email: string;
   username: string;
   password: string;
@@ -6,5 +6,3 @@ type User = {
 };
 
 export type UserInput = Omit<User, "_id">;
-
-export default User;

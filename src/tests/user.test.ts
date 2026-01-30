@@ -4,7 +4,7 @@ import userModel from "../models/userModel";
 import request from "supertest";
 import { Express } from "express";
 import { USERS } from "./consts";
-import User from "../types/user";
+import { User } from "../types/user";
 
 let app: Express;
 let user: User;
