@@ -29,8 +29,6 @@ describe("user registration", () => {
 
 describe("user login", () => {
   test("should login user", async () => {
-    // await new Promise((r) => setTimeout(r, 1000));
-
     const response = await request(app).post("/auth/login").send({
       email: USERS[0].email,
       password: USERS[0].password,
