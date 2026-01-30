@@ -92,8 +92,16 @@ router.get("/", commentController.getAll.bind(commentController));
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - message
+ *               - sender
+ *               - postId
  *             properties:
  *               message:
+ *                 type: string
+ *               sender:
+ *                 type: string
+ *               postId:
  *                 type: string
  *     responses:
  *       201:

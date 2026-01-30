@@ -19,11 +19,12 @@ beforeAll(async () => {
 
     const users = await userModel.create(USERS);
     userIds = users.map((user) => user._id.toString());
-
-    const posts = await postModel.create(POSTS.map((post, index) => ({
+    const postsWithSenderId = POSTS.map((post, index) => ({
         ...post,
         sender: userIds[index]
-    })));
+    }));
+
+    const posts = await postModel.create(postsWithSenderId);
     postIds = posts.map(post => post._id.toString());
 });
 
@@ -34,7 +35,7 @@ afterAll(async () => {
 describe("Create comment", () => {
     it("should create a comment successfully", async () => {
         const commentData = {
-            message: "Test Comment",
+            ...COMMENTS[0],
             sender: userIds[0],
             postId: postIds[0],
         };
@@ -59,7 +60,12 @@ describe("Create comment", () => {
 describe("Get comments", () => {
     beforeEach(async () => {
         await commentModel.deleteMany();
-        await commentModel.create(COMMENTS);
+        const commentsWithSenderId = COMMENTS.map((comment, index) => ({
+            ...comment,
+            sender: userIds[index],
+            postId: postIds[index],
+        }));
+        await commentModel.create(commentsWithSenderId);
     });
 
     it("should get all comments", async () => {
@@ -77,7 +83,7 @@ describe("Update comment", () => {
     beforeEach(async () => {
         await commentModel.deleteMany();
         const comment = await commentModel.create({
-            message: "Original Comment",
+            ...COMMENTS[0],
             sender: userIds[0],
             postId: postIds[0],
         });
@@ -86,7 +92,7 @@ describe("Update comment", () => {
 
     it("should update a comment", async () => {
         const updatedData = {
-            message: "Updated Comment",
+            ...COMMENTS[1],
             sender: userIds[1],
             postId: postIds[1],
         };
@@ -102,7 +108,7 @@ describe("Update comment", () => {
     it("should return 404 when updating a non-existent comment", async () => {
         const nonExistentId = new mongoose.Types.ObjectId().toString();
         const updatedData = {
-            message: "Updated Comment",
+            ...COMMENTS[1],
             sender: userIds[1],
             postId: postIds[1],
         };
@@ -118,7 +124,7 @@ describe("Update comment", () => {
         jest.spyOn(commentModel, "findByIdAndUpdate").mockRejectedValueOnce(new Error("Database error"));
 
         const updatedData = {
-            message: "Updated Comment",
+            ...COMMENTS[1],
             sender: userIds[1],
             postId: postIds[1],
         };
@@ -137,7 +143,7 @@ describe("Delete comment", () => {
     beforeEach(async () => {
         await commentModel.deleteMany();
         const comment = await commentModel.create({
-            message: "ToDelete Comment",
+            ...COMMENTS[0],
             sender: userIds[0],
             postId: postIds[0],
         });
