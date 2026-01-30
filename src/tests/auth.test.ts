@@ -27,6 +27,15 @@ describe("user registration", () => {
   });
 });
 
+describe("user login", () => {
+  test("should login user", async () => {
+    const response = await request(app).post("/auth/login").send(USERS[0]);
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveProperty("token");
+  });
+});
+
 describe("Operations with accesses token", () => {
   beforeEach(async () => {
     await authModel.deleteMany();
