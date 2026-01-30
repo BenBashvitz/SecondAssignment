@@ -63,10 +63,12 @@ const options: swaggerJsdoc.Options = {
             sender: {
               type: "string",
               description: "ID of the user who made the comment",
+              example: "697cc87180aa7bb6865a259d",
             },
             postId: {
               type: "string",
               description: "ID of the post the comment belongs to",
+              example: "697cc87180aa7bb6865a259d",
             },
           },
         },
