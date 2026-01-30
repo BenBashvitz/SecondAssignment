@@ -48,6 +48,7 @@ describe("Operations with accesses token", () => {
 
     tokens = {
       token: response.body.token,
+      refreshToken: response.body.refreshToken,
     };
   });
 
@@ -129,6 +130,73 @@ describe("Operations with accesses token", () => {
     }, 10000);
   });
 });
+
+describe("Refresh token", () => {
+  it("should fail to create a post with expired token", async () => {
+    await new Promise((r) => setTimeout(r, 5000));
+
+    const response = await request(app)
+      .post("/post")
+      .set("Authorization", `Bearer ${tokens.token}`)
+      .send(POSTS[0]);
+    expect(response.statusCode).toBe(401);
+
+    const refreshTokenResponse = await request(app)
+      .post("/auth/refresh-token")
+      .send({
+        refreshToken: tokens.refreshToken,
+      });
+
+    expect(refreshTokenResponse.statusCode).toBe(200);
+    expect(refreshTokenResponse.body).toHaveProperty("token");
+    expect(refreshTokenResponse.body).toHaveProperty("refreshToken");
+
+    tokens.token = refreshTokenResponse.body.token;
+    tokens.refreshToken = refreshTokenResponse.body.refreshToken;
+
+    const newPostResponse = await request(app)
+      .post("/post")
+      .send(POSTS[1])
+      .set("Authorization", `Bearer ${tokens.token}`);
+
+    expect(newPostResponse.statusCode).toBe(201);
+    expect(newPostResponse.body).toMatchObject(POSTS[1]);
+  }, 10000);
+
+  it("should fail to refresh token with double use", async () => {
+    await new Promise((r) => setTimeout(r, 1000));
+
+    const refreshTokenResponse = await request(app)
+      .post("/auth/refresh-token")
+      .send({
+        refreshToken: tokens.refreshToken,
+      });
+
+    expect(refreshTokenResponse.statusCode).toBe(200);
+    expect(refreshTokenResponse.body).toHaveProperty("token");
+    expect(refreshTokenResponse.body).toHaveProperty("refreshToken");
+
+    const newRefreshToken = refreshTokenResponse.body.refreshToken;
+
+    const secondRefreshTokenResponse = await request(app)
+      .post("/auth/refresh-token")
+      .send({
+        refreshToken: tokens.refreshToken,
+      });
+
+    expect(secondRefreshTokenResponse.statusCode).toBe(401);
+    expect(secondRefreshTokenResponse.body).toHaveProperty("error");
+
+    const thirdRefreshTokenResponse = await request(app)
+      .post("/auth/refresh-token")
+      .send({
+        refreshToken: newRefreshToken,
+      });
+
+    expect(thirdRefreshTokenResponse.statusCode).toBe(401);
+    expect(thirdRefreshTokenResponse.body).toHaveProperty("error");
+  });
+})
 
 afterAll(async () => {
   await mongoose.connection.close();
