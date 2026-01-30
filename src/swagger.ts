@@ -27,6 +27,7 @@ const options: swaggerJsdoc.Options = {
             _id: {
               type: "string",
               description: "User ID",
+              example: "697cc87180aa7bb6865a259d",
             },
             email: {
               type: "string",
@@ -42,6 +43,32 @@ const options: swaggerJsdoc.Options = {
               type: "string",
               description: "User password",
               example: "password123",
+            },
+          },
+        },
+        Comment: {
+          type: "object",
+          required: ["message", "sender", "postId"],
+          properties: {
+            _id: {
+              type: "string",
+              description: "Comment ID",
+              example: "697cc87180aa7bb6865a259d",
+            },
+            message: {
+              type: "string",
+              description: "The comment content",
+              example: "This is a great post!",
+            },
+            sender: {
+              type: "string",
+              description: "ID of the user who made the comment",
+              example: "697cc87180aa7bb6865a259d",
+            },
+            postId: {
+              type: "string",
+              description: "ID of the post the comment belongs to",
+              example: "697cc87180aa7bb6865a259d",
             },
           },
         },
