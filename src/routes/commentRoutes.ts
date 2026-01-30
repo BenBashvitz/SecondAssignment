@@ -1,14 +1,8 @@
 import express from "express";
 import commentController from "../controllers/commentsController";
+import { authMiddleware } from "../middlewares/authMiddleware";
 
 const router = express.Router();
-
-/**
- * @swagger
- * tags:
- *   name: Comments
- *   description: The Comments API
- */
 
 /**
  * @swagger
@@ -16,6 +10,8 @@ const router = express.Router();
  *   post:
  *     summary: Create a new comment
  *     tags: [Comments]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -40,6 +36,12 @@ const router = express.Router();
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Comment'
+ *       401:
+ *         description: Unauthorized - Authentication required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       500:
  *         description: Internal Server Error
  *         content:
@@ -47,7 +49,11 @@ const router = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post("/", commentController.post.bind(commentController));
+router.post(
+  "/",
+  authMiddleware,
+  commentController.post.bind(commentController),
+);
 
 /**
  * @swagger
@@ -79,6 +85,8 @@ router.get("/", commentController.getAll.bind(commentController));
  *   put:
  *     summary: Update the comment by the id
  *     tags: [Comments]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -110,6 +118,12 @@ router.get("/", commentController.getAll.bind(commentController));
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Comment'
+ *       401:
+ *         description: Unauthorized - Authentication required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       404:
  *         description: The comment was not found
  *         content:
@@ -123,7 +137,11 @@ router.get("/", commentController.getAll.bind(commentController));
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.put("/:id", commentController.put.bind(commentController));
+router.put(
+  "/:id",
+  authMiddleware,
+  commentController.put.bind(commentController),
+);
 
 /**
  * @swagger
@@ -131,6 +149,8 @@ router.put("/:id", commentController.put.bind(commentController));
  *   delete:
  *     summary: Remove the comment by id
  *     tags: [Comments]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -145,6 +165,12 @@ router.put("/:id", commentController.put.bind(commentController));
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Comment'
+ *       401:
+ *         description: Unauthorized - Authentication required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       404:
  *         description: The comment was not found
  *         content:
@@ -158,6 +184,10 @@ router.put("/:id", commentController.put.bind(commentController));
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.delete("/:id", commentController.delete.bind(commentController));
+router.delete(
+  "/:id",
+  authMiddleware,
+  commentController.delete.bind(commentController),
+);
 
 export default router;

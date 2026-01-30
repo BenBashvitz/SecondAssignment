@@ -19,6 +19,13 @@ const options: swaggerJsdoc.Options = {
       },
     ],
     components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
       schemas: {
         User: {
           type: "object",
@@ -72,14 +79,17 @@ const options: swaggerJsdoc.Options = {
             },
           },
         },
-        Error: {
+        AuthResponse: {
           type: "object",
           properties: {
-            message: {
+            accessToken: {
               type: "string",
-              description: "Error message",
+              description: "JWT access token",
             },
           },
+        },
+        Error: {
+          type: "string",
         },
       },
     },
