@@ -2,12 +2,11 @@
 
 POST http://localhost:3000/post
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTdjZWJiNzg3MGU2ZTMwYTE5NmQ2OGYiLCJpYXQiOjE3Njk4MDY2MzksImV4cCI6MTc2OTgxMDIzOX0.r4FamkVQbCHzjnNdtDQ5k4IeSA6AnYjpH9Egzlh_DE0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTdjZWJiNzg3MGU2ZTMwYTE5NmQ2OGYiLCJpYXQiOjE3Njk4MTYyNzMsImV4cCI6MTc2OTgxOTg3M30.98aWWJqCiLdYqBy3HNrCfRXNFZzTPOF01sSx-a5BXqU
 
 {
     "title": "Reading a book2",
-    "description": "A fascinating journey into the world of reading2.",
-    "sender": "697a78c9437f1b91bae9a42d"
+    "description": "A fascinating journey into the world of reading2."
 }
 
 ###
@@ -24,15 +23,14 @@ GET http://localhost:3000/post?sender=697a761cb0139ecd437a85ef
 
 ###
 
-PUT http://localhost:3000/post/697a7f77ca6d5b6fa2b90ea5
+PUT http://localhost:3000/post/697d3ddffe9f53e9f54a5008
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTdjZWJiNzg3MGU2ZTMwYTE5NmQ2OGYiLCJpYXQiOjE3Njk4MTI3OTYsImV4cCI6MTc2OTgxNjM5Nn0.wKQrgLFI_lLKnXAG31v7wwA-3xMCqjiqAapbMDjQ6xA
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTdjZWJiNzg3MGU2ZTMwYTE5NmQ2OGYiLCJpYXQiOjE3Njk4MTYyNzMsImV4cCI6MTc2OTgxOTg3M30.98aWWJqCiLdYqBy3HNrCfRXNFZzTPOF01sSx-a5BXqU
 
 {
   "title": "Reading a book",
-  "description": "A fascinating journey into the world of reading11111.",
-  "sender": "697a78c9437f1b91bae9a42d"
+  "description": "A fascinating journey into the world of reading2222222.",
+  "sender": "697cebb7870e6e30a196d68f"
 }
 
 ###
@@ -108,7 +106,7 @@ POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-    "email": "newuser@example.com",
+    "email": "newuser@example.comgaga",
     "username": "newuser",
     "password": "newpassword"
 }
