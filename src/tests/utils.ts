@@ -15,7 +15,3 @@ export async function cleanupBeforeCommentTests(
   }));
   return model.create(commentsWithUserAndPost);
 }
-
-export const check = async () => {
-  console.log("check");
-};

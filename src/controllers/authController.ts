@@ -24,9 +24,7 @@ const register = async (req: Request, res: Response) => {
   const { email, password, username } = req.body;
 
   if (!email || !password || !username) {
-    return res
-      .status(400)
-      .json({ message: "email, password, and username are required." });
+    return res.status(400).send("email, password, and username are required.");
   }
 
   const salt = await bcrypt.genSalt(10);
@@ -47,7 +45,7 @@ const register = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Register error: ", error);
 
-    return res.status(500).json({ message: "Error creating user." });
+    return res.status(500).send("Error creating user.");
   }
 };
 
