@@ -43,7 +43,7 @@ const register = async (req: Request, res: Response) => {
 
     await user.save();
 
-    return res.status(201).json(tokens);
+    return res.status(201).json({ tokens, userId: user._id });
   } catch (error) {
     console.error("Register error: ", error);
 

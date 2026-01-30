@@ -53,6 +53,32 @@ const options: swaggerJsdoc.Options = {
             },
           },
         },
+        Post: {
+          type: "object",
+          required: ["title", "description", "sender"],
+          properties: {
+            _id: {
+              type: "string",
+              description: "Post ID",
+              example: "697cc87180aa7bb6865a259d",
+            },
+            title: {
+              type: "string",
+              description: "The post title",
+              example: "My First Post",
+            },
+            description: {
+              type: "string",
+              description: "The post description",
+              example: "This is the description of my new post.",
+            },
+            sender: {
+              type: "string",
+              description: "ID of the user who created the post",
+              example: "697a78c9437f1b91bae9a42d",
+            },
+          },
+        },
         Comment: {
           type: "object",
           required: ["message", "sender", "postId"],
