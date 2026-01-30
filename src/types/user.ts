@@ -3,8 +3,7 @@ export type User = {
   password: string;
   username: string;
   _id: string;
-  token?: string;
-  refreshTokens?: string[];
+  refreshTokens: string[];
 };
 
 export type UserInput = Omit<User, "_id">;
