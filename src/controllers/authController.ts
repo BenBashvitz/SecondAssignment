@@ -48,8 +48,6 @@ const register = async (req: Request, res: Response) => {
 
     const tokens = generateTokens(user._id.toString());
 
-    await user.save();
-
     return res.status(201).json(tokens);
   } catch (error) {
     console.error("Register error: ", error);
@@ -86,8 +84,6 @@ const login = async (req: Request, res: Response) => {
 
     const tokens = generateTokens(user._id.toString());
 
-    await user.save();
-
     return res.status(200).json(tokens);
   } catch (error) {
     console.error("Login error: ", error);
@@ -118,7 +114,6 @@ const refreshToken = async (req: Request, res: Response) => {
 
     if (!user.refreshTokens?.includes(oldRefreshToken)) {
       user.refreshTokens = [];
-      await user.save();
 
       return res.status(401).json({ error: "Invalid refresh token." });
     }
@@ -130,8 +125,6 @@ const refreshToken = async (req: Request, res: Response) => {
     const tokens = generateTokens(user._id.toString());
 
     user.refreshTokens?.push(tokens.refreshToken);
-
-    await user.save();
 
     res.status(200).json(tokens);
   } catch (error) {
