@@ -2,16 +2,27 @@ import { Express } from "express";
 import mongoose from "mongoose";
 import request from "supertest";
 import initApp from "../index";
-import authModel from "../models/userModel";
+import userModel from "../models/userModel";
 import Tokens from "../types/tokens";
 import { COMMENTS, POSTS, USERS } from "./consts";
+import { getUserToken } from "./utils";
+import jwt from "jsonwebtoken";
+import TokenPayload from "../types/token";
 
 let app: Express;
 let tokens: Tokens;
+let userId: string;
 
 beforeAll(async () => {
   app = await initApp();
-  await authModel.deleteMany();
+  await userModel.deleteMany();
+
+  tokens = await getUserToken(app);
+
+  const tokenPayload: TokenPayload = jwt.decode(
+    tokens.token,
+  ) as TokenPayload;
+  userId = tokenPayload.userId;
 });
 
 describe("user registration", () => {
@@ -38,7 +49,7 @@ describe("user login", () => {
 
 describe("Operations with accesses token", () => {
   beforeEach(async () => {
-    await authModel.deleteMany();
+    await userModel.deleteMany();
 
     const response = await request(app).post("/auth/register").send({
       email: USERS[0].email,
@@ -135,10 +146,12 @@ describe("Refresh token", () => {
   it("should fail to create a post with expired token", async () => {
     await new Promise((r) => setTimeout(r, 5000));
 
+    const postWithSender = { ...POSTS[0], sender: userId };
+
     const response = await request(app)
       .post("/post")
       .set("Authorization", `Bearer ${tokens.token}`)
-      .send(POSTS[0]);
+      .send(postWithSender);
     expect(response.statusCode).toBe(401);
 
     const refreshTokenResponse = await request(app)
@@ -154,13 +167,15 @@ describe("Refresh token", () => {
     tokens.token = refreshTokenResponse.body.token;
     tokens.refreshToken = refreshTokenResponse.body.refreshToken;
 
+    const newPostWithSender = { ...POSTS[1], sender: userId };
+
     const newPostResponse = await request(app)
       .post("/post")
-      .send(POSTS[1])
+      .send(newPostWithSender)
       .set("Authorization", `Bearer ${tokens.token}`);
 
     expect(newPostResponse.statusCode).toBe(201);
-    expect(newPostResponse.body).toMatchObject(POSTS[1]);
+    expect(newPostResponse.body).toMatchObject(newPostWithSender);
   }, 10000);
 
   it("should fail to refresh token with double use", async () => {
