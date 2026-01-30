@@ -112,20 +112,10 @@ const options: swaggerJsdoc.Options = {
               type: "string",
               description: "JWT access token",
             },
-            refreshToken: {
-              type: "string",
-              description: "JWT refresh token",
-            },
           },
         },
         Error: {
-          type: "object",
-          properties: {
-            message: {
-              type: "string",
-              description: "Error message",
-            },
-          },
+          type: "string",
         },
       },
     },

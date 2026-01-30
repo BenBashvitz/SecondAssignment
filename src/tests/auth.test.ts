@@ -29,11 +29,7 @@ describe("user registration", () => {
 
 describe("user login", () => {
   test("should login user", async () => {
-    const response = await request(app).post("/auth/login").send({
-      email: USERS[0].email,
-      password: USERS[0].password,
-      username: USERS[0].username,
-    });
+    const response = await request(app).post("/auth/login").send(USERS[0]);
 
     expect(response.statusCode).toBe(200);
     expect(response.body).toHaveProperty("token");

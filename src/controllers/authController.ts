@@ -3,11 +3,13 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import userModel from "../models/userModel";
 import Tokens from "../types/tokens";
+import DEFAULT_JWT_EXPIRATION_TIME_SECONDS from "../consts";
 
 const generateTokens = (userId: string): Tokens => {
   const jwtSecret = process.env.JWT_SECRET;
   const jwtExpirationTimeSeconds =
-    process.env.JWT_EXPIRATION_TIME_SECONDS ?? 3600;
+    process.env.JWT_EXPIRATION_TIME_SECONDS ??
+    DEFAULT_JWT_EXPIRATION_TIME_SECONDS;
 
   if (!jwtSecret) {
     throw new Error("JWT configuration error.");
@@ -24,9 +26,7 @@ const register = async (req: Request, res: Response) => {
   const { email, password, username } = req.body;
 
   if (!email || !password || !username) {
-    return res
-      .status(400)
-      .json({ message: "email, password, and username are required." });
+    return res.status(400).send("email, password, and username are required.");
   }
 
   const salt = await bcrypt.genSalt(10);
@@ -47,7 +47,7 @@ const register = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Register error: ", error);
 
-    return res.status(500).json({ message: "Error creating user." });
+    return res.status(500).send("Error creating user.");
   }
 };
 
