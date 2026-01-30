@@ -27,6 +27,7 @@ const options: swaggerJsdoc.Options = {
             _id: {
               type: "string",
               description: "User ID",
+              example: "697cc87180aa7bb6865a259d",
             },
             email: {
               type: "string",
@@ -52,6 +53,7 @@ const options: swaggerJsdoc.Options = {
             _id: {
               type: "string",
               description: "Comment ID",
+              example: "697cc87180aa7bb6865a259d",
             },
             message: {
               type: "string",
