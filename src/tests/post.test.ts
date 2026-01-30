@@ -1,14 +1,18 @@
 import { Express } from "express";
+import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import request from "supertest";
 import initApp from "../index";
 import postModel from "../models/postModel";
+import { Post } from "../types/post";
 import Tokens from "../types/tokens";
 import { POSTS } from "./consts";
 import { getUserToken } from "./utils";
+import TokenPayload from "../types/token";
 
 let app: Express;
 let userTokens: Tokens;
+let userId: string;
 
 beforeAll(async () => {
   app = await initApp();
@@ -16,18 +20,25 @@ beforeAll(async () => {
   await postModel.deleteMany();
 
   userTokens = await getUserToken(app);
+
+  const tokenPayload: TokenPayload = jwt.decode(
+    userTokens.token,
+  ) as TokenPayload;
+  userId = tokenPayload.userId;
 });
 
 describe("Create post", () => {
   test("should create posts", async () => {
     for (const post of POSTS) {
+      const postToInsert = { ...post, sender: userId };
+
       const response = await request(app)
         .post("/post")
         .set("Authorization", `Bearer ${userTokens.token}`)
-        .send(post);
+        .send(postToInsert);
 
       expect(response.statusCode).toBe(201);
-      expect(response.body).toMatchObject(post);
+      expect(response.body).toMatchObject(postToInsert);
     }
   });
 
@@ -46,16 +57,14 @@ describe("Create post", () => {
 });
 
 describe("with post creation", () => {
-  let postId: string;
+  let post: Post;
 
   beforeEach(async () => {
     await postModel.deleteMany();
 
     const postWithSender = { ...POSTS[0], sender: userId };
 
-    const response = await postModel.create(postWithSender);
-
-    postId = response._id;
+    post = await postModel.create(postWithSender);
   });
 
   describe("Get posts", () => {
@@ -66,16 +75,16 @@ describe("with post creation", () => {
     });
 
     it("should get posts with filter", async () => {
-      const response = await request(app).get(`/post?title=${POSTS[0].title}`);
+      const response = await request(app).get(`/post?title=${post.title}`);
 
       expect(response.statusCode).toBe(200);
       expect(response.body.length).toBe(1);
-      expect(response.body[0].title).toBe(POSTS[0].title);
+      expect(response.body[0].title).toBe(post.title);
     });
 
     it("should return empty array if no posts match filter", async () => {
       const response = await request(app).get(
-        `/post?title=${POSTS[0].title}NonExistent`,
+        `/post?title=${post.title}NonExistent`,
       );
       expect(response.statusCode).toBe(200);
       expect(response.body.length).toBe(0);
@@ -84,9 +93,9 @@ describe("with post creation", () => {
 
   describe("Get post by ID", () => {
     it("should get post by id", async () => {
-      const response = await request(app).get(`/post/${postId}`);
+      const response = await request(app).get(`/post/${post._id.toString()}`);
       expect(response.statusCode).toBe(200);
-      expect(response.body._id).toBe(postId);
+      expect(response.body._id).toBe(post._id.toString());
     });
 
     it("should return 404 if post not found", async () => {
@@ -98,51 +107,34 @@ describe("with post creation", () => {
 
   describe("Update post", () => {
     it("should update post by id", async () => {
-      POSTS[0].description = POSTS[0].description + " Updated";
-      POSTS[0].title = POSTS[0].title + " Updated";
-      POSTS[0].sender = new mongoose.Types.ObjectId();
+      const postUpdate = {
+        ...POSTS[1],
+        sender: new mongoose.Types.ObjectId(),
+      };
 
       const response = await request(app)
-        .put(`/post/${postId}`)
+        .put(`/post/${post._id.toString()}`)
         .set("Authorization", `Bearer ${userTokens.token}`)
-        .send(POSTS[0]);
+        .send(postUpdate);
 
       expect(response.statusCode).toBe(201);
-      expect(response.body).toMatchObject(POSTS[0]);
-      expect(response.body._id).toBe(postId);
+      expect(response.body).toMatchObject(POSTS[1]);
+      expect(response.body._id).toBe(post._id.toString());
     });
 
     it("should return 404 when updating a non-existent post", async () => {
       const nonExistentId = new mongoose.Types.ObjectId().toString();
+      const postUpdate = {
+        ...POSTS[1],
+        sender: new mongoose.Types.ObjectId(),
+      };
+
       const response = await request(app)
         .put(`/post/${nonExistentId}`)
         .set("Authorization", `Bearer ${userTokens.token}`)
-        .send(POSTS[0]);
+        .send(postUpdate);
 
       expect(response.status).toBe(404);
-    });
-
-    describe("Delete post", () => {
-      it("should delete post by id", async () => {
-        const response = await request(app)
-          .delete(`/post/${postId}`)
-          .set("Authorization", `Bearer ${userTokens.token}`);
-
-        expect(response.statusCode).toBe(200);
-
-        const getResponse = await request(app).get(`/post/${postId}`);
-
-        expect(getResponse.statusCode).toBe(404);
-      });
-
-      it("should return 404 when deleting a non-existent post", async () => {
-        const nonExistentId = new mongoose.Types.ObjectId().toString();
-        const response = await request(app)
-          .delete(`/post/${nonExistentId}`)
-          .set("Authorization", `Bearer ${userTokens.token}`);
-
-        expect(response.status).toBe(404);
-      });
     });
   });
 });

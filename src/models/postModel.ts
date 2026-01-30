@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import Post from "../types/post";
+import PostInput from "../types/post";
 
-const postSchema = new mongoose.Schema<Post>({
+const postSchema = new mongoose.Schema<PostInput>({
   title: {
     type: String,
     required: true,

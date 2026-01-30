@@ -24,13 +24,15 @@ GET http://localhost:3000/post?sender=697a761cb0139ecd437a85ef
 
 ###
 
-PUT http://localhost:3000/post/6974d77bb9d6f59b625eede6
+PUT http://localhost:3000/post/697a7f77ca6d5b6fa2b90ea5
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTdjZWJiNzg3MGU2ZTMwYTE5NmQ2OGYiLCJpYXQiOjE3Njk4MTI3OTYsImV4cCI6MTc2OTgxNjM5Nn0.wKQrgLFI_lLKnXAG31v7wwA-3xMCqjiqAapbMDjQ6xA
+
 
 {
   "title": "Reading a book",
-  "description": "A fascinating journey into the world of reading.",
-  "sender": "123"
+  "description": "A fascinating journey into the world of reading11111.",
+  "sender": "697a78c9437f1b91bae9a42d"
 }
 
 ###

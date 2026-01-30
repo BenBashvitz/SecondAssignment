@@ -1,8 +1,8 @@
 import postModel from "../models/postModel";
-import Post from "../types/post";
+import PostInput from "../types/post";
 import BaseController from "./baseController";
 
-class PostController extends BaseController<Post> {
+class PostController extends BaseController<PostInput> {
   constructor() {
     super(postModel);
   }

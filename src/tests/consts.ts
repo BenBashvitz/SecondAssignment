@@ -1,8 +1,8 @@
 import Comment from "../types/comment";
-import Post from "../types/post";
+import PostInput from "../types/post";
 import { UserInput } from "../types/user";
 
-export const POSTS: Omit<Post, "sender">[] = [
+export const POSTS: Omit<PostInput, "sender">[] = [
   {
     title: "Test Post",
     description: "Test Description",
