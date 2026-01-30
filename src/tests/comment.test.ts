@@ -5,12 +5,12 @@ import mongoose from "mongoose";
 import userModel from "../models/userModel";
 import postModel from "../models/postModel";
 import commentModel from "../models/commentModel";
-import { USERS, POSTS } from "./consts";
+import { USERS, POSTS, COMMENTS } from "./consts";
 import { Express } from "express";
 
 let app: Express;
-let userId: string;
-let postId: string;
+let userIds: string[];
+let postIds: string[];
 
 beforeAll(async () => {
     app = await initApp();
@@ -18,14 +18,14 @@ beforeAll(async () => {
     await postModel.deleteMany();
     await commentModel.deleteMany();
 
-    const user = await userModel.create(USERS[0]);
-    userId = user._id.toString();
+    const users = await userModel.create(USERS);
+    userIds = users.map((user) => user._id.toString());
 
-    const post = await postModel.create({
-        ...POSTS[0],
-        sender: userId,
-    });
-    postId = post._id.toString();
+    const posts = await postModel.create(POSTS.map((post, index) => ({
+        ...post,
+        sender: userIds[index]
+    })));
+    postIds = posts.map(post => post._id.toString());
 });
 
 afterAll(async () => {
@@ -36,16 +36,14 @@ describe("Create comment", () => {
     it("should create a comment successfully", async () => {
         const commentData = {
             message: "Test Comment",
-            sender: userId,
-            postId: postId,
+            sender: userIds[0],
+            postId: postIds[0],
         };
 
         const response = await request(app).post("/comment").send(commentData);
 
         expect(response.status).toBe(201);
-        expect(response.body.message).toBe(commentData.message);
-        expect(response.body.sender).toBe(commentData.sender);
-        expect(response.body.postId).toBe(commentData.postId);
+        expect(response.body).toMatchObject(commentData);
     });
 
     it("should fail to create a comment with missing required fields", async () => {
@@ -60,12 +58,18 @@ describe("Create comment", () => {
 });
 
 describe("Get comments", () => {
+
+    beforeEach(async () => {
+        await commentModel.deleteMany();
+        await commentModel.create(COMMENTS);
+    });
+
     it("should get all comments", async () => {
         const response = await request(app).get("/comment");
 
         expect(response.status).toBe(200);
-        expect(Array.isArray(response.body)).toBe(true);
-        expect(response.body.length).toBeGreaterThan(0);
+        expect(response.body).toBeInstanceOf(Array);
+        expect(response.body.length).toBe(COMMENTS.length);
     });
 });
 
@@ -76,8 +80,8 @@ describe("Update comment", () => {
         await commentModel.deleteMany();
         const comment = await commentModel.create({
             message: "Original Comment",
-            sender: userId,
-            postId: postId,
+            sender: userIds[0],
+            postId: postIds[0],
         });
         commentId = comment._id.toString();
     });
@@ -85,6 +89,8 @@ describe("Update comment", () => {
     it("should update a comment", async () => {
         const updatedData = {
             message: "Updated Comment",
+            sender: userIds[1],
+            postId: postIds[1],
         };
 
         const response = await request(app)
@@ -92,13 +98,15 @@ describe("Update comment", () => {
             .send(updatedData);
 
         expect(response.status).toBe(201);
-        expect(response.body.message).toBe(updatedData.message);
+        expect(response.body).toMatchObject(updatedData);
     });
 
     it("should return 404 when updating a non-existent comment", async () => {
         const nonExistentId = new mongoose.Types.ObjectId().toString();
         const updatedData = {
             message: "Updated Comment",
+            sender: userIds[1],
+            postId: postIds[1],
         };
 
         const response = await request(app)
@@ -113,6 +121,8 @@ describe("Update comment", () => {
 
         const updatedData = {
             message: "Updated Comment",
+            sender: userIds[1],
+            postId: postIds[1],
         };
 
         const response = await request(app)
@@ -130,8 +140,8 @@ describe("Delete comment", () => {
         await commentModel.deleteMany();
         const comment = await commentModel.create({
             message: "ToDelete Comment",
-            sender: userId,
-            postId: postId,
+            sender: userIds[0],
+            postId: postIds[0],
         });
         commentId = comment._id.toString();
     });
