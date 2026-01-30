@@ -3,11 +3,13 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import userModel from "../models/userModel";
 import Tokens from "../types/tokens";
+import DEFAULT_JWT_EXPIRATION_TIME_SECONDS from "../consts";
 
 const generateTokens = (userId: string): Tokens => {
   const jwtSecret = process.env.JWT_SECRET;
   const jwtExpirationTimeSeconds =
-    process.env.JWT_EXPIRATION_TIME_SECONDS ?? 3600;
+    process.env.JWT_EXPIRATION_TIME_SECONDS ??
+    DEFAULT_JWT_EXPIRATION_TIME_SECONDS;
 
   if (!jwtSecret) {
     throw new Error("JWT configuration error.");
