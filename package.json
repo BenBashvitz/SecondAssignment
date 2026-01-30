@@ -11,7 +11,8 @@
     "dev": "nodemon src/server.ts",
     "test": "jest --detectOpenHandles",
     "test-user": "jest --detectOpenHandles src/tests/user.test.ts",
-    "test-auth": "jest --detectOpenHandles src/tests/auth.test.ts"
+    "test-auth": "jest --detectOpenHandles src/tests/auth.test.ts",
+    "test-post": "jest --detectOpenHandles src/tests/post.test.ts"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

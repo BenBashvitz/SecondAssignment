@@ -1,9 +1,16 @@
 import { Types } from "mongoose";
 
-type Post = {
+type PostInput = {
   title: string;
   description: string;
   sender: Types.ObjectId;
 };
 
-export default Post;
+export type Post = {
+  _id: Types.ObjectId;
+  title: string;
+  description: string;
+  sender: Types.ObjectId;
+};
+
+export default PostInput;

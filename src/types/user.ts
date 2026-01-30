@@ -8,5 +8,3 @@ export type User = {
 };
 
 export type UserInput = Omit<User, "_id">;
-
-export default User;

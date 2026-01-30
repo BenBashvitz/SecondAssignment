@@ -60,26 +60,20 @@ const login = async (req: Request, res: Response) => {
   const { email, password, username } = req.body;
 
   if (!email || !password || !username) {
-    return res
-      .status(400)
-      .json({ message: "email, password, and username are required." });
+    return res.status(400).send("email, password, and username are required.");
   }
 
   try {
     const user = await userModel.findOne({ email, username });
 
     if (!user) {
-      return res
-        .status(401)
-        .json({ message: "Invalid email, username or password." });
+      return res.status(401).send("Invalid email, username or password.");
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res
-        .status(401)
-        .json({ message: "Invalid email, username or password." });
+      return res.status(401).send("Invalid email, username or password.");
     }
 
     const tokens = generateTokens(user._id.toString());
@@ -88,7 +82,7 @@ const login = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Login error: ", error);
 
-    return res.status(500).json({ message: "Error logging in." });
+    return res.status(500).send("Error logging in.");
   }
 };
 

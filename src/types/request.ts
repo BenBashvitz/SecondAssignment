@@ -1,5 +1,5 @@
 import { Request } from "express";
-import User from "./user";
+import { User } from "./user";
 
 export type UserReq = {
   userId: string;

@@ -1,18 +1,15 @@
-import { UserInput } from "../types/user";
-import Post from "../types/post";
 import Comment from "../types/comment";
-import mongoose from "mongoose";
+import PostInput from "../types/post";
+import { UserInput } from "../types/user";
 
-export const POSTS: Post[] = [
+export const POSTS: Omit<PostInput, "sender">[] = [
   {
     title: "Test Post",
     description: "Test Description",
-    sender: new mongoose.Types.ObjectId(),
   },
   {
     title: "Another Post",
     description: "Another Description",
-    sender: new mongoose.Types.ObjectId(),
   },
 ];
 
@@ -29,16 +26,11 @@ export const USERS: UserInput[] = [
   },
 ];
 
-export const COMMENTS: Comment[] = [
+export const COMMENTS: Omit<Comment, "sender" | "postId">[] = [
   {
     message: "Test Comment",
-    sender: new mongoose.Types.ObjectId(),
-    postId: new mongoose.Types.ObjectId(),
   },
   {
     message: "Another Comment",
-    sender: new mongoose.Types.ObjectId(),
-    postId: new mongoose.Types.ObjectId(),
   },
 ];
-
