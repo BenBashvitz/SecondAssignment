@@ -6,6 +6,7 @@ import swaggerUi from "swagger-ui-express";
 import commentRouter from "./routes/commentRoutes";
 import postRouter from "./routes/postRoutes";
 import userRouter from "./routes/userRoutes";
+import authRouter from "./routes/authRoutes";
 import swaggerSpec from "./swagger";
 
 dotenv.config({ path: ".env.dev" });
@@ -36,6 +37,7 @@ const initApp = async () => {
   app.use("/post", postRouter);
   app.use("/comment", commentRouter);
   app.use("/user", userRouter);
+  app.use("/auth", authRouter);
 
   return app;
 };

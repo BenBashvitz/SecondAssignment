@@ -19,6 +19,13 @@ const options: swaggerJsdoc.Options = {
       },
     ],
     components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
       schemas: {
         User: {
           type: "object",
@@ -69,6 +76,19 @@ const options: swaggerJsdoc.Options = {
               type: "string",
               description: "ID of the post the comment belongs to",
               example: "697cc87180aa7bb6865a259d",
+            },
+          },
+        },
+        AuthResponse: {
+          type: "object",
+          properties: {
+            accessToken: {
+              type: "string",
+              description: "JWT access token",
+            },
+            refreshToken: {
+              type: "string",
+              description: "JWT refresh token",
             },
           },
         },

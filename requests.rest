@@ -98,3 +98,24 @@ GET http://localhost:3000/user/697a78c9437f1b91bae9a42d
 
 ###
 DELETE http://localhost:3000/user/6974d77bb9d6f59b625eede6
+
+
+###
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+    "email": "newuser@example.com",
+    "username": "newuser",
+    "password": "newpassword"
+}
+
+###
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "email": "newuser@example.com",
+    "username": "newuser",
+    "password": "newpassword"
+}
