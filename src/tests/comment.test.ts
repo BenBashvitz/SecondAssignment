@@ -16,7 +16,6 @@ beforeAll(async () => {
     app = await initApp();
     await userModel.deleteMany();
     await postModel.deleteMany();
-    await commentModel.deleteMany();
 
     const users = await userModel.create(USERS);
     userIds = users.map((user) => user._id.toString());
