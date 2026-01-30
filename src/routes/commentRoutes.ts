@@ -41,7 +41,7 @@ const router = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/Comment'
  *       500:
- *         description: Some server error
+ *         description: Internal Server Error
  *         content:
  *           application/json:
  *             schema:
@@ -65,7 +65,7 @@ router.post("/", commentController.post.bind(commentController));
  *               items:
  *                 $ref: '#/components/schemas/Comment'
  *       500:
- *         description: Some server error
+ *         description: Internal Server Error
  *         content:
  *           application/json:
  *             schema:
@@ -109,7 +109,7 @@ router.get("/", commentController.getAll.bind(commentController));
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *       500:
- *         description: Some server error
+ *         description: Internal Server Error
  *         content:
  *           application/json:
  *             schema:
@@ -144,7 +144,7 @@ router.put("/:id", commentController.put.bind(commentController));
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *       500:
- *         description: Some server error
+ *         description: Internal Server Error
  *         content:
  *           application/json:
  *             schema:

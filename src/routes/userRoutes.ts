@@ -37,7 +37,7 @@ const router = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/User'
  *       500:
- *         description: Internal Server error
+ *         description: Internal Server Error
  *         content:
  *           application/json:
  *             schema:
@@ -61,7 +61,7 @@ router.post("/", userController.post.bind(userController));
  *               items:
  *                 $ref: '#/components/schemas/User'
  *       500:
- *         description: Internal server error
+ *         description: Internal Server Error
  *         content:
  *           application/json:
  *             schema:
@@ -97,7 +97,7 @@ router.get("/", userController.getAll.bind(userController));
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *       500:
- *         description: Internal Server error
+ *         description: Internal Server Error
  *         content:
  *           application/json:
  *             schema:
@@ -149,7 +149,7 @@ router.get("/:id", userController.getById.bind(userController));
  *               $ref: '#/components/schemas/Error'
  *
  *       500:
- *         description: Internal Server error
+ *         description: Internal Server Error
  *         content:
  *           application/json:
  *             schema:
@@ -184,7 +184,7 @@ router.put("/:id", userController.put.bind(userController));
  *             schema:
  *               $ref: '#/components/schemas/Error'
  *       500:
- *         description: Internal Server error
+ *         description: Internal Server Error
  *         content:
  *           application/json:
  *             schema:
