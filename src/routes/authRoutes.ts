@@ -167,6 +167,17 @@ router.post("/refresh-token", authController.refreshToken);
 *     responses:
 *       200:
 *         description: Logged out successfully
+*         content:
+*           application/json:
+*             schema:
+*               type: object
+*               properties:
+*                 refreshToken:
+*                   type: string
+*                   example: null
+*                 token:
+*                   type: string
+*                   example: null
 *       500:
 *         description: Internal Server Error
 *         content:
