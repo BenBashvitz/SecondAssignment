@@ -2,14 +2,16 @@ import { Express } from "express";
 import mongoose from "mongoose";
 import request from "supertest";
 import initApp from "../index";
+import commentModel from "../models/commentModel";
+import postModel from "../models/postModel";
 import authModel from "../models/userModel";
 import Tokens from "../types/tokens";
 import { COMMENTS, POSTS, USERS } from "./consts";
-import { cleanupBeforeCommentTests, getUserToken, setupMultipleUsersForTests } from "./utils";
-import jwt from "jsonwebtoken";
-import TokenPayload from "../types/token";
-import postModel from "../models/postModel";
-import commentModel from "../models/commentModel";
+import {
+  cleanupBeforeCommentTests,
+  cleanupBeforePostTests,
+  setupMultipleUsersForTests,
+} from "./utils";
 
 let app: Express;
 
@@ -88,6 +90,28 @@ describe("Operations with accesses token", () => {
 
       expect(response.statusCode).toBe(401);
     }, 10000);
+
+    test("should fail to update a post by another user", async () => {
+      const posts = await cleanupBeforePostTests(
+        postModel,
+        [POSTS[0]],
+        userIds,
+      );
+
+      const postId = posts[0]._id.toString();
+
+      const updatedData = {
+        ...POSTS[1],
+        sender: userIds[1],
+      };
+
+      const response = await request(app)
+        .put(`/post/${postId}`)
+        .set("Authorization", `Bearer ${userTokens[1].token}`)
+        .send(updatedData);
+
+      expect(response.status).toBe(403);
+    });
   });
 
   describe("Comment", () => {
@@ -97,18 +121,20 @@ describe("Operations with accesses token", () => {
       await postModel.deleteMany();
       const postsWithSenderId = POSTS.map((post, index) => ({
         ...post,
-        sender: userIds[index]
+        sender: userIds[index],
       }));
 
       const posts = await postModel.create(postsWithSenderId);
-      postIds = posts.map(post => post._id.toString());
+      postIds = posts.map((post) => post._id.toString());
     });
 
     test("should fail to create a comment without a token", async () => {
-      const response = await request(app).post("/comment").send({
-        ...COMMENTS[0],
-        postId: postIds[0],
-      });
+      const response = await request(app)
+        .post("/comment")
+        .send({
+          ...COMMENTS[0],
+          postId: postIds[0],
+        });
 
       expect(response.statusCode).toBe(401);
     });
@@ -153,9 +179,13 @@ describe("Operations with accesses token", () => {
       expect(response.statusCode).toBe(401);
     }, 10000);
 
-
     test("should fail to update a comment by another user", async () => {
-      const comments = await cleanupBeforeCommentTests(commentModel, [COMMENTS[0]], userIds, postIds);
+      const comments = await cleanupBeforeCommentTests(
+        commentModel,
+        [COMMENTS[0]],
+        userIds,
+        postIds,
+      );
       const commentId = comments[0]._id.toString();
       const updatedData = {
         ...COMMENTS[1],
