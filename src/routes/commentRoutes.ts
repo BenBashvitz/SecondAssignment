@@ -21,13 +21,10 @@ const router = express.Router();
  *             required:
  *               - message
  *               - postId
- *               - sender
  *             properties:
  *               message:
  *                 type: string
  *               postId:
- *                 type: string
- *               sender:
  *                 type: string
  *     responses:
  *       201:

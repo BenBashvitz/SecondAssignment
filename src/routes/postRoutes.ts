@@ -21,7 +21,6 @@ const router = express.Router();
  *             required:
  *               - title
  *               - description
- *               - sender
  *             properties:
  *               title:
  *                 type: string
@@ -29,9 +28,6 @@ const router = express.Router();
  *               description:
  *                 type: string
  *                 example: This is the description of my new post.
- *               sender:
- *                 type: string
- *                 example: 697a78c9437f1b91bae9a42d
  *     responses:
  *       201:
  *         description: Post created successfully
