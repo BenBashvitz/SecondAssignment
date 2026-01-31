@@ -7,9 +7,12 @@ import { Post } from "../types/post";
 import Tokens from "../types/tokens";
 import { POSTS } from "./consts";
 import { getUserToken } from "./utils";
+import jwt from "jsonwebtoken";
+import TokenPayload from "../types/token";
 
 let app: Express;
 let userTokens: Tokens;
+let userId: string;
 
 beforeAll(async () => {
   app = await initApp();
@@ -17,6 +20,8 @@ beforeAll(async () => {
   await postModel.deleteMany();
 
   userTokens = await getUserToken(app);
+
+  userId = (jwt.decode(userTokens.token) as TokenPayload).userId;
 });
 
 describe("Create post", () => {
@@ -52,12 +57,9 @@ describe("with post creation", () => {
   beforeEach(async () => {
     await postModel.deleteMany();
 
-    const response = await request(app)
-      .post("/post")
-      .set("Authorization", `Bearer ${userTokens.token}`)
-      .send(POSTS[0]);
+    const postToInsert = { ...POSTS[0], sender: userId };
 
-    post = response.body;
+    post = (await postModel.create(postToInsert)).toObject();
   });
 
   describe("Get posts", () => {
