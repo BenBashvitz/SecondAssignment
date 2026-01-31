@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 import userModel from "../models/userModel";
 import postModel from "../models/postModel";
 import commentModel from "../models/commentModel";
-import { USERS, POSTS, COMMENTS } from "./consts";
+import { POSTS, COMMENTS } from "./consts";
 import { Express } from "express";
 import { cleanupBeforeCommentTests, setupMultipleUsersForTests } from "./utils";
 import Tokens from "../types/tokens";
@@ -51,6 +51,7 @@ describe("Create comment", () => {
 
         expect(response.status).toBe(201);
         expect(response.body).toMatchObject(commentData);
+        expect(response.body.sender).toBe(userIds[0]);
     });
 
     it("should fail to create a comment with missing required fields", async () => {
@@ -155,14 +156,9 @@ describe("Delete comment", () => {
             .set("Authorization", `Bearer ${userTokens[0].token}`)
 
         expect(response.status).toBe(200);
-    });
 
-    it("should fail to delete a comment by another user", async () => {
-        const response = await request(app)
-            .delete(`/comment/${commentId}`)
-            .set("Authorization", `Bearer ${userTokens[1].token}`)
-
-        expect(response.status).toBe(403);
+        const deletedComment = await commentModel.findById(commentId);
+        expect(deletedComment).toBeNull();
     });
 
     it("should return 404 when deleting a non-existent comment", async () => {

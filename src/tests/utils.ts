@@ -24,15 +24,18 @@ export const cleanupBeforeCommentTests = async (
 }
 
 export const setupMultipleUsersForTests = async (app: Express) => {
-  let userTokens: Tokens[] = [];
-  let userIds: string[] = [];
+  const userTokens: Tokens[] = [];
+  const userIds: string[] = [];
 
-  for (const user of USERS) {
+  for (let i = 0; i < USERS.length; i++) {
     const token = await getUserToken(app);
     userTokens.push(token);
   }
 
-  userIds = userTokens.map((token) => (jwt.decode(token.token) as TokenPayload).userId);
+  for (const token of userTokens) {
+    userIds.push((jwt.decode(token.token) as TokenPayload).userId);
+  }
+
 
   return { userTokens, userIds };
 }
