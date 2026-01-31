@@ -9,7 +9,7 @@ class PostController extends BaseController<Post> {
     super(postModel);
   }
 
-  async post(req: AuthRequest, res: Response) {
+  override async post(req: AuthRequest, res: Response) {
     const userId = req.user?._id;
 
     req.body.sender = userId;
@@ -17,7 +17,7 @@ class PostController extends BaseController<Post> {
     return super.post(req, res);
   }
 
-  async put(req: AuthRequest, res: Response) {
+  override async put(req: AuthRequest, res: Response) {
     const userId = req.user?._id;
 
     const post = await postModel.findById(req.params.id);
