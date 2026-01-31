@@ -1,5 +1,6 @@
 import express from "express";
 import authController from "../controllers/authController";
+import { authMiddleware } from "../middlewares/authMiddleware";
 
 const router = express.Router();
 
@@ -166,18 +167,6 @@ router.post("/refresh-token", authController.refreshToken);
 *     responses:
 *       200:
 *         description: Logged out successfully
-*       401:
-*         description: Unauthorized - Invalid refresh token
-*         content:
-*           application/json:
-*             schema:
-*               $ref: '#/components/schemas/Error'
-*       400:
-*         description: Bad request - Missing refreshToken
-*         content:
-*           application/json:
-*             schema:
-*               $ref: '#/components/schemas/Error'
 *       500:
 *         description: Internal Server Error
 *         content:
@@ -185,6 +174,6 @@ router.post("/refresh-token", authController.refreshToken);
 *             schema:
 *               $ref: '#/components/schemas/Error'
 */
-router.post("/logout", authController.logout);
+router.post("/logout", authMiddleware, authController.logout);
 
 export default router;

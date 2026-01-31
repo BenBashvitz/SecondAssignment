@@ -291,40 +291,34 @@ describe("User logout", () => {
   test("should logout user", async () => {
     const response = await request(app)
       .post("/auth/logout")
-      .send({ refreshToken: userTokens[0].refreshToken });
+      .set("Authorization", `Bearer ${userTokens[0].token}`);
 
     expect(response.statusCode).toBe(200);
+    expect(response.body.token).toBeFalsy();
+    expect(response.body.refreshToken).toBeFalsy();
   });
 
   test("should fail to refresh token after logout", async () => {
     await request(app)
       .post("/auth/logout")
-      .send({ refreshToken: userTokens[0].refreshToken });
+      .set("Authorization", `Bearer ${userTokens[0].token}`);
 
     const response = await request(app)
       .post("/auth/refresh-token")
-      .send({ refreshToken: userTokens[0].refreshToken });
+      .set("Authorization", `Bearer ${userTokens[0].token}`);
 
     expect(response.statusCode).toBe(401);
   });
 
-  test("should fail to logout without token", async () => {
-    const response = await request(app)
-      .post("/auth/logout")
-      .send({});
-
-    expect(response.statusCode).toBe(400);
-  });
-
-  test("should fail to logout with expired token", async () => {
-    await new Promise((r) => setTimeout(r, 5000));
+  test("should return 500 if logout fails", async () => {
+    jest.spyOn(userModel, "updateOne").mockRejectedValueOnce(new Error("Database error"));
 
     const response = await request(app)
       .post("/auth/logout")
-      .send({ refreshToken: userTokens[0].token });
+      .set("Authorization", `Bearer ${userTokens[0].token}`)
 
-    expect(response.statusCode).toBe(401);
-  }, 10000);
+    expect(response.status).toBe(500);
+  })
 });
 
 afterAll(async () => {

@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import userModel from "../models/userModel";
 import Tokens from "../types/tokens";
 import { DEFAULT_JWT_EXPIRATION_TIME_SECONDS, DEFAULT_REFRESH_JWT_EXPIRATION_TIME_SECONDS } from "../consts";
-import { UserReq } from "../types/request";
+import { AuthRequest, UserReq } from "../types/request";
 
 const generateTokens = (userId: string): Tokens => {
   const jwtSecret = process.env.JWT_SECRET;
@@ -136,43 +136,17 @@ const refreshToken = async (req: Request, res: Response) => {
   }
 };
 
-const logout = async (req: Request, res: Response) => {
-  const { refreshToken: oldRefreshToken } = req.body;
-  const jwtSecret = process.env.JWT_SECRET ?? "";
-
-  if (!oldRefreshToken) {
-    return res.status(400).send("refreshToken is required.");
-  }
-
+const logout = async (req: AuthRequest, res: Response) => {
   try {
-    const decodedRefreshToken = jwt.verify(
-      oldRefreshToken,
-      jwtSecret
-    ) as UserReq;
+    await userModel.updateOne({ _id: req.user?._id }, { $set: { refreshTokens: [] } });
 
-    const user = await userModel.findById(decodedRefreshToken.userId);
-
-    if (!user) {
-      return res.status(401).send("Invalid refresh token.");
-    }
-
-    if (!user.refreshTokens.includes(oldRefreshToken)) {
-      user.refreshTokens = [];
-      await user.save();
-
-      return res.status(401).send("Invalid refresh token.");
-    }
-
-    user.refreshTokens = user.refreshTokens.filter(
-      (refreshToken) => refreshToken !== oldRefreshToken
-    );
-
-    await user.save();
-
-    res.status(200).send("Logged out successfully.");
+    res.status(200).json({
+      refreshToken: null,
+      token: null
+    });
   } catch (error) {
     console.error("Logout error: ", error);
-    return res.status(401).send("Invalid refresh token");
+    return res.status(500).send("Error logging out.");
   }
 };
 
