@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
-import { User } from "../types/user";
+import { RawUser } from "../types/user";
 
-const userSchema = new mongoose.Schema<User>({
+const userSchema = new mongoose.Schema<RawUser>({
   email: {
     type: String,
     required: true,
