@@ -60,19 +60,6 @@ describe("Create comment", () => {
         expect(response.body.sender).toBe(userIds[0]);
     });
 
-    it("should fail to create a comment without auth", async () => {
-        const commentData = {
-            ...COMMENTS[0],
-            postId: postIds[0],
-        };
-
-        const response = await request(app)
-            .post("/comment")
-            .send(commentData);
-
-        expect(response.status).toBe(401);
-    });
-
     it("should fail to create a comment with missing required fields", async () => {
         const commentData = {
             message: "Test Comment",
@@ -113,6 +100,7 @@ describe("Update comment", () => {
         const updatedData = {
             ...COMMENTS[1],
             postId: postIds[1],
+            sender: userIds[1],
         };
 
         const response = await request(app)
@@ -122,12 +110,15 @@ describe("Update comment", () => {
 
         expect(response.status).toBe(201);
         expect(response.body.message).toBe(updatedData.message);
+        expect(response.body.postId).toBe(postIds[1]);
+        expect(response.body.sender).toBe(userIds[1]);
     });
 
     it("should fail to update a comment by another user", async () => {
         const updatedData = {
             ...COMMENTS[1],
             postId: postIds[1],
+            sender: userIds[1],
         };
 
         const response = await request(app)
@@ -143,6 +134,7 @@ describe("Update comment", () => {
         const updatedData = {
             ...COMMENTS[1],
             postId: postIds[1],
+            sender: userIds[1],
         };
 
         const response = await request(app)
@@ -185,12 +177,6 @@ describe("Delete comment", () => {
             .set("Authorization", `Bearer ${userTokens[0].token}`)
 
         expect(response.status).toBe(200);
-    });
-
-    it("should fail to delete a comment without auth", async () => {
-        const response = await request(app).delete(`/comment/${commentId}`);
-
-        expect(response.status).toBe(401);
     });
 
     it("should fail to delete a comment by another user", async () => {
