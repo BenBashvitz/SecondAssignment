@@ -20,12 +20,9 @@ const router = express.Router();
  *             type: object
  *             required:
  *               - message
- *               - sender
  *               - postId
  *             properties:
  *               message:
- *                 type: string
- *               sender:
  *                 type: string
  *               postId:
  *                 type: string
@@ -102,12 +99,9 @@ router.get("/", commentController.getAll.bind(commentController));
  *             type: object
  *             required:
  *               - message
- *               - sender
  *               - postId
  *             properties:
  *               message:
- *                 type: string
- *               sender:
  *                 type: string
  *               postId:
  *                 type: string
