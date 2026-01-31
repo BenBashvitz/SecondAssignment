@@ -105,7 +105,7 @@ const options: swaggerJsdoc.Options = {
             },
           },
         },
-        LoginResponse: {
+        AuthResponse: {
           type: "object",
           properties: {
             token: {

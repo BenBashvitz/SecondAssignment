@@ -130,13 +130,13 @@ router.post("/login", authController.login);
 *         content:
 *           application/json:
 *             schema:
-*               $ref: '#/components/schemas/LoginResponse'
+*               $ref: '#/components/schemas/AuthResponse'
 *       401:
 *         description: Unauthorized - Invalid refresh token
 *         content:
 *           application/json:
 *             schema:
-*               $ref: '#/components/schemas/LoginResponse'
+*               $ref: '#/components/schemas/Error'
 *       500:
 *         description: Internal Server Error
 *         content:
@@ -160,7 +160,7 @@ router.post("/refresh-token", authController.refreshToken);
 *         content:
 *           application/json:
 *             schema:
-*               $ref: '#/components/schemas/LoginResponse'
+*               $ref: '#/components/schemas/AuthResponse'
 *       500:
 *         description: Internal Server Error
 *         content:
