@@ -105,12 +105,16 @@ const options: swaggerJsdoc.Options = {
             },
           },
         },
-        AuthResponse: {
+        LoginResponse: {
           type: "object",
           properties: {
-            accessToken: {
+            token: {
               type: "string",
               description: "JWT access token",
+            },
+            refreshToken: {
+              type: "string",
+              description: "JWT refresh token",
             },
           },
         },
