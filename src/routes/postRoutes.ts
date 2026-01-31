@@ -169,6 +169,12 @@ router.get("/:id", postController.getById.bind(postController));
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
+ *       403:
+ *         description: Forbidden - You are not authorized to update this post
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
  *       404:
  *         description: Post not found
  *         content:

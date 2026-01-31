@@ -7,6 +7,7 @@ import Tokens from "../types/tokens";
 import { USERS } from "./consts";
 import TokenPayload from "../types/token";
 import jwt from "jsonwebtoken";
+import { Post, PostInput } from "../types/post";
 
 export const cleanupBeforeCommentTests = async (
   model: Model<Comment>,
@@ -21,7 +22,22 @@ export const cleanupBeforeCommentTests = async (
     postId: postIds[index],
   }));
   return model.create(commentsWithUserAndPost);
-}
+};
+
+export const cleanupBeforePostTests = async (
+  model: Model<Post>,
+  data: PostInput[],
+  userIds: string[],
+) => {
+  await model.deleteMany();
+
+  const postsWithSender = data.map((post, index) => ({
+    ...post,
+    sender: userIds[index],
+  }));
+
+  return model.create(postsWithSender);
+};
 
 export const setupMultipleUsersForTests = async (app: Express) => {
   const userTokens: Tokens[] = [];
@@ -36,9 +52,8 @@ export const setupMultipleUsersForTests = async (app: Express) => {
     userIds.push((jwt.decode(token.token) as TokenPayload).userId);
   }
 
-
   return { userTokens, userIds };
-}
+};
 
 export const getUserToken = async (app: Express): Promise<Tokens> => {
   const email = "test@example.com";
