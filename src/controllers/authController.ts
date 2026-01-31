@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import userModel from "../models/userModel";
 import Tokens from "../types/tokens";
 import { DEFAULT_JWT_EXPIRATION_TIME_SECONDS, DEFAULT_REFRESH_JWT_EXPIRATION_TIME_SECONDS } from "../consts";
-import { UserReq } from "../types/request";
+import { AuthRequest, UserReq } from "../types/request";
 
 const generateTokens = (userId: string): Tokens => {
   const jwtSecret = process.env.JWT_SECRET;
@@ -136,8 +136,23 @@ const refreshToken = async (req: Request, res: Response) => {
   }
 };
 
+const logout = async (req: AuthRequest, res: Response) => {
+  try {
+    await userModel.updateOne({ _id: req.user?._id }, { $set: { refreshTokens: [] } });
+
+    res.status(200).json({
+      refreshToken: null,
+      token: null
+    });
+  } catch (error) {
+    console.error("Logout error: ", error);
+    return res.status(500).send("Error logging out.");
+  }
+};
+
 export default {
   register,
   login,
-  refreshToken
+  refreshToken,
+  logout
 };

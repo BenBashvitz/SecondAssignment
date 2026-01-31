@@ -278,7 +278,49 @@ describe("Refresh token", () => {
 
     expect(thirdRefreshTokenResponse.statusCode).toBe(401);
   });
-})
+});
+
+describe("User logout", () => {
+  let userTokens: Tokens[] = [];
+
+  beforeEach(async () => {
+    const userData = await setupMultipleUsersForTests(app);
+    userTokens = userData.userTokens;
+  });
+
+  test("should logout user", async () => {
+    const response = await request(app)
+      .post("/auth/logout")
+      .set("Authorization", `Bearer ${userTokens[0].token}`);
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body.token).toBeNull();
+    expect(response.body.refreshToken).toBeNull();
+  });
+
+  test("should fail to refresh token after logout", async () => {
+    await request(app)
+      .post("/auth/logout")
+      .set("Authorization", `Bearer ${userTokens[0].token}`);
+
+    const response = await request(app)
+      .post("/auth/refresh-token").send({
+        refreshToken: userTokens[0].refreshToken,
+      })
+
+    expect(response.statusCode).toBe(401);
+  });
+
+  test("should return 500 if logout fails", async () => {
+    jest.spyOn(userModel, "updateOne").mockRejectedValueOnce(new Error("Database error"));
+
+    const response = await request(app)
+      .post("/auth/logout")
+      .set("Authorization", `Bearer ${userTokens[0].token}`)
+
+    expect(response.status).toBe(500);
+  })
+});
 
 afterAll(async () => {
   await mongoose.connection.close();

@@ -1,5 +1,6 @@
 import express from "express";
 import authController from "../controllers/authController";
+import { authMiddleware } from "../middlewares/authMiddleware";
 
 const router = express.Router();
 
@@ -135,7 +136,6 @@ router.post("/login", authController.login);
 *         content:
 *           application/json:
 *             schema:
-*               $ref: '#/components/schemas/Error'
 *               $ref: '#/components/schemas/LoginResponse'
 *       500:
 *         description: Internal Server Error
@@ -145,5 +145,29 @@ router.post("/login", authController.login);
 *               $ref: '#/components/schemas/Error'
 */
 router.post("/refresh-token", authController.refreshToken);
+
+/**
+* @swagger
+* /auth/logout:
+*   post:
+*     summary: Logout a user
+*     tags: [Auth]
+*     security:
+*       - bearerAuth: []
+*     responses:
+*       200:
+*         description: Logged out successfully
+*         content:
+*           application/json:
+*             schema:
+*               $ref: '#/components/schemas/LoginResponse'
+*       500:
+*         description: Internal Server Error
+*         content:
+*           application/json:
+*             schema:
+*               $ref: '#/components/schemas/Error'
+*/
+router.post("/logout", authMiddleware, authController.logout);
 
 export default router;
