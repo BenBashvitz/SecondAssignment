@@ -20,11 +20,7 @@ describe("Create user", () => {
       const response = await request(app).post("/user").send(user);
 
       expect(response.status).toBe(201);
-      expect(response.body).toMatchObject({
-        email: user.email,
-        username: user.username,
-        password: user.password,
-      });
+      expect(response.body).toMatchObject(user);
     }
   });
 

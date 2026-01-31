@@ -35,7 +35,7 @@ const register = async (req: Request, res: Response) => {
   if (!email || !password || !username) {
     return res
       .status(400)
-      .json({ message: "email, password and username are required." });
+      .send("email, password and username are required.");
   }
 
   const salt = await bcrypt.genSalt(10);
@@ -53,7 +53,7 @@ const register = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Register error: ", error);
 
-    return res.status(500).json({ message: "Error creating user." });
+    return res.status(500).send("Error creating user.");
   }
 };
 
@@ -63,20 +63,20 @@ const login = async (req: Request, res: Response) => {
   if (!email || !password) {
     return res
       .status(400)
-      .json({ message: "email and password are required." });
+      .send("email and password are required.");
   }
 
   try {
     const user = await userModel.findOne({ email });
 
     if (!user) {
-      return res.status(401).json({ message: "Invalid email or password." });
+      return res.status(401).send("Invalid email or password.");
     }
 
     const isMatch = bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid email or password." });
+      return res.status(401).send("Invalid email or password.");
     }
 
     const tokens = generateTokens(user._id.toString());
@@ -88,7 +88,7 @@ const login = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Login error: ", error);
 
-    return res.status(500).json({ message: "Error logging in." });
+    return res.status(500).send("Error logging in.");
   }
 };
 
@@ -97,7 +97,7 @@ const refreshToken = async (req: Request, res: Response) => {
   const jwtSecret = process.env.JWT_SECRET ?? "";
 
   if (!oldRefreshToken) {
-    return res.status(400).json({ message: "refreshToken is required." });
+    return res.status(400).send("refreshToken is required.");
   }
 
   try {
@@ -109,14 +109,14 @@ const refreshToken = async (req: Request, res: Response) => {
     const user = await userModel.findById(decodedRefreshToken.userId);
 
     if (!user) {
-      return res.status(401).json({ error: "Invalid refresh token." });
+      return res.status(401).send("Invalid refresh token.");
     }
 
     if (!user.refreshTokens.includes(oldRefreshToken)) {
       user.refreshTokens = [];
       await user.save();
 
-      return res.status(401).json({ error: "Invalid refresh token." });
+      return res.status(401).send("Invalid refresh token.");
     }
 
     user.refreshTokens = user.refreshTokens.filter(
@@ -132,7 +132,7 @@ const refreshToken = async (req: Request, res: Response) => {
     res.status(200).json(tokens);
   } catch (error) {
     console.error("Refresh token error: ", error);
-    return res.status(401).json({ error: "Invalid refresh token" });
+    return res.status(401).send("Invalid refresh token");
   }
 };
 

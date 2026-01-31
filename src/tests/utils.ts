@@ -27,17 +27,8 @@ export const cleanupBeforeCommentTests = async (
 export const setupMultipleUsersForTests = async (app: Express) => {
   await userModel.deleteMany();
 
-  const userTokens: Tokens[] = [];
-  const userIds: string[] = [];
-
-  for (let i = 0; i < USERS.length; i++) {
-    const token = await getUserToken(app, USERS[i]);
-    userTokens.push(token);
-  }
-
-  for (const token of userTokens) {
-    userIds.push((jwt.decode(token.token) as TokenPayload).userId);
-  }
+  const userTokens: Tokens[] = await Promise.all(USERS.map(user => getUserToken(app, user)));
+  const userIds: string[] = userTokens.map(token => (jwt.decode(token.token) as TokenPayload).userId);
 
   return { userTokens, userIds };
 }

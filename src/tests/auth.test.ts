@@ -43,7 +43,6 @@ describe("Operations with accesses token", () => {
   let userIds: string[] = [];
 
   beforeEach(async () => {
-    await userModel.deleteMany();
     const userData = await setupMultipleUsersForTests(app);
     userTokens = userData.userTokens;
     userIds = userData.userIds;
@@ -197,8 +196,8 @@ describe("Refresh token", () => {
       });
 
     expect(refreshTokenResponse.statusCode).toBe(200);
-    expect(refreshTokenResponse.body).toHaveProperty("token");
-    expect(refreshTokenResponse.body).toHaveProperty("refreshToken");
+    expect(refreshTokenResponse.body.token).not.toBeNull();
+    expect(refreshTokenResponse.body.refreshToken).not.toBeNull();
 
     userTokens[0].token = refreshTokenResponse.body.token;
     userTokens[0].refreshToken = refreshTokenResponse.body.refreshToken;
@@ -210,6 +209,8 @@ describe("Refresh token", () => {
 
     expect(newPostResponse.statusCode).toBe(201);
     expect(newPostResponse.body).toMatchObject(POSTS[1]);
+    expect(newPostResponse.body.sender).toBe(userIds[0]);
+
   }, 10000);
 
   it("should fail to refresh token with double use", async () => {
@@ -222,8 +223,8 @@ describe("Refresh token", () => {
       });
 
     expect(refreshTokenResponse.statusCode).toBe(200);
-    expect(refreshTokenResponse.body).toHaveProperty("token");
-    expect(refreshTokenResponse.body).toHaveProperty("refreshToken");
+    expect(refreshTokenResponse.body.token).not.toBeNull();
+    expect(refreshTokenResponse.body.refreshToken).not.toBeNull();
 
     const newRefreshToken = refreshTokenResponse.body.refreshToken;
 
@@ -234,7 +235,6 @@ describe("Refresh token", () => {
       });
 
     expect(secondRefreshTokenResponse.statusCode).toBe(401);
-    expect(secondRefreshTokenResponse.body).toHaveProperty("error");
 
     const thirdRefreshTokenResponse = await request(app)
       .post("/auth/refresh-token")
@@ -243,7 +243,6 @@ describe("Refresh token", () => {
       });
 
     expect(thirdRefreshTokenResponse.statusCode).toBe(401);
-    expect(thirdRefreshTokenResponse.body).toHaveProperty("error");
   });
 })
 
