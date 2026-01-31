@@ -136,8 +136,49 @@ const refreshToken = async (req: Request, res: Response) => {
   }
 };
 
+const logout = async (req: Request, res: Response) => {
+  const { refreshToken: oldRefreshToken } = req.body;
+  const jwtSecret = process.env.JWT_SECRET ?? "";
+
+  if (!oldRefreshToken) {
+    return res.status(400).send("refreshToken is required.");
+  }
+
+  try {
+    const decodedRefreshToken = jwt.verify(
+      oldRefreshToken,
+      jwtSecret
+    ) as UserReq;
+
+    const user = await userModel.findById(decodedRefreshToken.userId);
+
+    if (!user) {
+      return res.status(401).send("Invalid refresh token.");
+    }
+
+    if (!user.refreshTokens.includes(oldRefreshToken)) {
+      user.refreshTokens = [];
+      await user.save();
+
+      return res.status(401).send("Invalid refresh token.");
+    }
+
+    user.refreshTokens = user.refreshTokens.filter(
+      (refreshToken) => refreshToken !== oldRefreshToken
+    );
+
+    await user.save();
+
+    res.status(200).send("Logged out successfully.");
+  } catch (error) {
+    console.error("Logout error: ", error);
+    return res.status(401).send("Invalid refresh token");
+  }
+};
+
 export default {
   register,
   login,
-  refreshToken
+  refreshToken,
+  logout
 };

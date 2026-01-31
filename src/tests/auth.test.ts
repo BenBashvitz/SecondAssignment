@@ -276,7 +276,54 @@ describe("Refresh token", () => {
 
     expect(thirdRefreshTokenResponse.statusCode).toBe(401);
   });
-})
+});
+
+describe("User logout", () => {
+  let userTokens: Tokens[] = [];
+
+  beforeEach(async () => {
+    const userData = await setupMultipleUsersForTests(app);
+    userTokens = userData.userTokens;
+  });
+
+  test("should logout user", async () => {
+    const response = await request(app)
+      .post("/auth/logout")
+      .send({ refreshToken: userTokens[0].refreshToken });
+
+    expect(response.statusCode).toBe(200);
+  });
+
+  test("should fail to refresh token after logout", async () => {
+    await request(app)
+      .post("/auth/logout")
+      .send({ refreshToken: userTokens[0].refreshToken });
+
+    const response = await request(app)
+      .post("/auth/refresh-token")
+      .send({ refreshToken: userTokens[0].refreshToken });
+
+    expect(response.statusCode).toBe(401);
+  });
+
+  test("should fail to logout without token", async () => {
+    const response = await request(app)
+      .post("/auth/logout")
+      .send({});
+
+    expect(response.statusCode).toBe(400);
+  });
+
+  test("should fail to logout with expired token", async () => {
+    await new Promise((r) => setTimeout(r, 5000));
+
+    const response = await request(app)
+      .post("/auth/logout")
+      .send({ refreshToken: userTokens[0].token });
+
+    expect(response.statusCode).toBe(401);
+  }, 10000);
+});
 
 afterAll(async () => {
   await mongoose.connection.close();

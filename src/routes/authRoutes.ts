@@ -136,7 +136,6 @@ router.post("/login", authController.login);
 *           application/json:
 *             schema:
 *               $ref: '#/components/schemas/Error'
-*               $ref: '#/components/schemas/LoginResponse'
 *       500:
 *         description: Internal Server Error
 *         content:
@@ -145,5 +144,47 @@ router.post("/login", authController.login);
 *               $ref: '#/components/schemas/Error'
 */
 router.post("/refresh-token", authController.refreshToken);
+
+/**
+* @swagger
+* /auth/logout:
+*   post:
+*     summary: Logout a user
+*     tags: [Auth]
+*     requestBody:
+*       required: true
+*       content:
+*         application/json:
+*           schema:
+*             type: object
+*             required:
+*               - refreshToken
+*             properties:
+*               refreshToken:
+*                 type: string
+*                 example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+*     responses:
+*       200:
+*         description: Logged out successfully
+*       401:
+*         description: Unauthorized - Invalid refresh token
+*         content:
+*           application/json:
+*             schema:
+*               $ref: '#/components/schemas/Error'
+*       400:
+*         description: Bad request - Missing refreshToken
+*         content:
+*           application/json:
+*             schema:
+*               $ref: '#/components/schemas/Error'
+*       500:
+*         description: Internal Server Error
+*         content:
+*           application/json:
+*             schema:
+*               $ref: '#/components/schemas/Error'
+*/
+router.post("/logout", authController.logout);
 
 export default router;
