@@ -21,10 +21,13 @@ const router = express.Router();
  *             required:
  *               - message
  *               - postId
+ *               - sender
  *             properties:
  *               message:
  *                 type: string
  *               postId:
+ *                 type: string
+ *               sender:
  *                 type: string
  *     responses:
  *       201:
@@ -100,10 +103,13 @@ router.get("/", commentController.getAll.bind(commentController));
  *             required:
  *               - message
  *               - postId
+ *               - sender
  *             properties:
  *               message:
  *                 type: string
  *               postId:
+ *                 type: string
+ *               sender:
  *                 type: string
  *     responses:
  *       201:
@@ -114,6 +120,12 @@ router.get("/", commentController.getAll.bind(commentController));
  *               $ref: '#/components/schemas/Comment'
  *       401:
  *         description: Unauthorized - Authentication required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       403:
+ *         description: Forbidden - You are not authorized to update this comment
  *         content:
  *           application/json:
  *             schema:
@@ -161,6 +173,12 @@ router.put(
  *               $ref: '#/components/schemas/Comment'
  *       401:
  *         description: Unauthorized - Authentication required
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ *       403:
+ *         description: Forbidden - You are not authorized to delete this comment
  *         content:
  *           application/json:
  *             schema:

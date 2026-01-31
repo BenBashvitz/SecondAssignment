@@ -14,7 +14,7 @@ import TokenPayload from "../types/token";
 
 let app: Express;
 let userIds: string[] = [];
-let userTokensArray: Tokens[] = [];
+let userTokens: Tokens[] = [];
 let postIds: string[];
 
 beforeAll(async () => {
@@ -24,10 +24,10 @@ beforeAll(async () => {
 
     for (const user of USERS) {
         const token = await getUserToken(app);
-        userTokensArray.push(token);
+        userTokens.push(token);
     }
 
-    userIds = userTokensArray.map((token) => (jwt.decode(token.token) as TokenPayload).userId);
+    userIds = userTokens.map((token) => (jwt.decode(token.token) as TokenPayload).userId);
 
     const postsWithSenderId = POSTS.map((post, index) => ({
         ...post,
@@ -51,11 +51,12 @@ describe("Create comment", () => {
 
         const response = await request(app)
             .post("/comment")
-            .set("Authorization", `Bearer ${userTokensArray[0].token}`)
+            .set("Authorization", `Bearer ${userTokens[0].token}`)
             .send(commentData);
 
         expect(response.status).toBe(201);
         expect(response.body.message).toBe(commentData.message);
+        expect(response.body.postId).toBe(postIds[0]);
         expect(response.body.sender).toBe(userIds[0]);
     });
 
@@ -79,7 +80,7 @@ describe("Create comment", () => {
 
         const response = await request(app)
             .post("/comment")
-            .set("Authorization", `Bearer ${userTokensArray[0].token}`)
+            .set("Authorization", `Bearer ${userTokens[0].token}`)
             .send(commentData);
 
         expect(response.status).toBe(500);
@@ -116,7 +117,7 @@ describe("Update comment", () => {
 
         const response = await request(app)
             .put(`/comment/${commentId}`)
-            .set("Authorization", `Bearer ${userTokensArray[0].token}`)
+            .set("Authorization", `Bearer ${userTokens[0].token}`)
             .send(updatedData);
 
         expect(response.status).toBe(201);
@@ -131,7 +132,7 @@ describe("Update comment", () => {
 
         const response = await request(app)
             .put(`/comment/${commentId}`)
-            .set("Authorization", `Bearer ${userTokensArray[1].token}`)
+            .set("Authorization", `Bearer ${userTokens[1].token}`)
             .send(updatedData);
 
         expect(response.status).toBe(403);
@@ -146,7 +147,7 @@ describe("Update comment", () => {
 
         const response = await request(app)
             .put(`/comment/${nonExistentId}`)
-            .set("Authorization", `Bearer ${userTokensArray[0].token}`)
+            .set("Authorization", `Bearer ${userTokens[0].token}`)
             .send(updatedData);
 
         expect(response.status).toBe(404);
@@ -163,7 +164,7 @@ describe("Update comment", () => {
 
         const response = await request(app)
             .put(`/comment/${commentId}`)
-            .set("Authorization", `Bearer ${userTokensArray[0].token}`)
+            .set("Authorization", `Bearer ${userTokens[0].token}`)
             .send(updatedData);
 
         expect(response.status).toBe(500);
@@ -181,7 +182,7 @@ describe("Delete comment", () => {
     it("should delete a comment", async () => {
         const response = await request(app)
             .delete(`/comment/${commentId}`)
-            .set("Authorization", `Bearer ${userTokensArray[0].token}`)
+            .set("Authorization", `Bearer ${userTokens[0].token}`)
 
         expect(response.status).toBe(200);
     });
@@ -192,11 +193,19 @@ describe("Delete comment", () => {
         expect(response.status).toBe(401);
     });
 
+    it("should fail to delete a comment by another user", async () => {
+        const response = await request(app)
+            .delete(`/comment/${commentId}`)
+            .set("Authorization", `Bearer ${userTokens[1].token}`)
+
+        expect(response.status).toBe(403);
+    });
+
     it("should return 404 when deleting a non-existent comment", async () => {
         const nonExistentId = new mongoose.Types.ObjectId().toString();
         const response = await request(app)
             .delete(`/comment/${nonExistentId}`)
-            .set("Authorization", `Bearer ${userTokensArray[0].token}`)
+            .set("Authorization", `Bearer ${userTokens[0].token}`)
 
         expect(response.status).toBe(404);
     });
@@ -206,7 +215,7 @@ describe("Delete comment", () => {
 
         const response = await request(app)
             .delete(`/comment/${commentId}`)
-            .set("Authorization", `Bearer ${userTokensArray[0].token}`)
+            .set("Authorization", `Bearer ${userTokens[0].token}`)
 
         expect(response.status).toBe(500);
     });

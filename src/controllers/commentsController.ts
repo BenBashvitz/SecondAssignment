@@ -14,7 +14,7 @@ class CommentsController extends BaseController<Comment> {
 
         req.body.sender = userId;
 
-        return super.post(req, res);
+        await super.post(req, res);
     }
 
     override async put(req: AuthRequest, res: Response) {
@@ -27,6 +27,19 @@ class CommentsController extends BaseController<Comment> {
         }
 
         return super.put(req, res);
+    }
+
+    override async delete(req: AuthRequest, res: Response) {
+        const userId = req.user?._id;
+
+        const comment = await commentModel.findById(req.params.id);
+
+        if (comment && comment.sender.toString() !== userId) {
+            res.status(403).send("You are not authorized to delete this comment");
+            return;
+        }
+
+        await super.delete(req, res);
     }
 }
 
