@@ -59,10 +59,6 @@ describe("with created user", () => {
 
       const { _id, ...restUser } = user;
 
-      console.log("response.body:", response.body);
-      console.log("user: ", user);
-      console.log("restUser:", restUser);
-
       expect(response.status).toBe(200);
       expect(response.body).toMatchObject(restUser);
       expect(response.body._id).toBe(_id.toString());
