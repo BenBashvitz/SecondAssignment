@@ -75,16 +75,18 @@ class BaseController<T> {
       });
 
       if (updatedData) {
-        res.status(201).json(updatedData);
+        return res.status(201).json(updatedData);
       } else {
-        res.status(404).send(`The entity with the id ${id} was not found`);
+        return res
+          .status(404)
+          .send(`The entity with the id ${id} was not found`);
       }
     } catch (error) {
       console.error(
         `An error occurred while updating data with the id: ${id}`,
         error,
       );
-      res
+      return res
         .status(500)
         .send(`An error occurred while updating data with the id: ${id}`);
     }
