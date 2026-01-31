@@ -316,7 +316,7 @@ describe("User logout", () => {
 
     const response = await request(app)
       .post("/auth/logout")
-      .set("Authorization", `Bearer ${userTokens[0].refreshToken}`)
+      .set("Authorization", `Bearer ${userTokens[0].token}`)
 
     expect(response.status).toBe(500);
   })
