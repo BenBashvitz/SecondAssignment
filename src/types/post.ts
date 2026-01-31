@@ -1,9 +1,8 @@
 import { Types } from "mongoose";
 
-type PostInput = {
+export type PostInput = {
   title: string;
   description: string;
-  sender: Types.ObjectId;
 };
 
 export type Post = {
@@ -12,5 +11,3 @@ export type Post = {
   description: string;
   sender: Types.ObjectId;
 };
-
-export default PostInput;

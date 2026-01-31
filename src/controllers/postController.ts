@@ -1,10 +1,10 @@
+import { Response } from "express";
 import postModel from "../models/postModel";
-import PostInput from "../types/post";
+import { Post } from "../types/post";
 import { AuthRequest } from "../types/request";
 import BaseController from "./baseController";
-import { Response } from "express";
 
-class PostController extends BaseController<PostInput> {
+class PostController extends BaseController<Post> {
   constructor() {
     super(postModel);
   }
@@ -22,7 +22,7 @@ class PostController extends BaseController<PostInput> {
 
     const post = await postModel.findById(req.params.id);
 
-    if (post?.sender.toString() !== userId) {
+    if (post && post?.sender.toString() !== userId) {
       return res.status(403).send("You are not authorized to update this post");
     }
 
