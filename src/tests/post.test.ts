@@ -3,25 +3,22 @@ import mongoose from "mongoose";
 import request from "supertest";
 import initApp from "../index";
 import postModel from "../models/postModel";
+import userModel from "../models/userModel";
 import { Post } from "../types/post";
 import Tokens from "../types/tokens";
-import { POSTS } from "./consts";
+import { POSTS, USERS } from "./consts";
 import { getUserToken } from "./utils";
-import jwt from "jsonwebtoken";
-import TokenPayload from "../types/token";
 
 let app: Express;
 let userTokens: Tokens;
-let userId: string;
 
 beforeAll(async () => {
   app = await initApp();
 
   await postModel.deleteMany();
+  await userModel.deleteMany();
 
-  userTokens = await getUserToken(app);
-
-  userId = (jwt.decode(userTokens.token) as TokenPayload).userId;
+  userTokens = await getUserToken(app, USERS[0]);
 });
 
 describe("Create post", () => {
@@ -57,9 +54,12 @@ describe("with post creation", () => {
   beforeEach(async () => {
     await postModel.deleteMany();
 
-    const postToInsert = { ...POSTS[0], sender: userId };
+    const response = await request(app)
+      .post("/post")
+      .set("Authorization", `Bearer ${userTokens.token}`)
+      .send(POSTS[0]);
 
-    post = (await postModel.create(postToInsert)).toObject();
+    post = response.body;
   });
 
   describe("Get posts", () => {

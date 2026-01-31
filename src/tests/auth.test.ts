@@ -5,9 +5,7 @@ import initApp from "../index";
 import userModel from "../models/userModel";
 import Tokens from "../types/tokens";
 import { COMMENTS, POSTS, USERS } from "./consts";
-import { cleanupBeforeCommentTests, getUserToken, setupMultipleUsersForTests } from "./utils";
-import jwt from "jsonwebtoken";
-import TokenPayload from "../types/token";
+import { cleanupBeforeCommentTests, setupMultipleUsersForTests } from "./utils";
 import postModel from "../models/postModel";
 import commentModel from "../models/commentModel";
 
@@ -178,7 +176,6 @@ describe("Refresh token", () => {
   let userIds: string[] = [];
 
   beforeEach(async () => {
-    await userModel.deleteMany();
     const userData = await setupMultipleUsersForTests(app);
     userTokens = userData.userTokens;
     userIds = userData.userIds;
