@@ -22,7 +22,7 @@ class PostController extends BaseController<Post> {
 
     const post = await postModel.findById(req.params.id);
 
-    if (post && post?.sender.toString() !== userId) {
+    if (post && post.sender.toString() !== userId) {
       return res.status(403).send("You are not authorized to update this post");
     }
 
