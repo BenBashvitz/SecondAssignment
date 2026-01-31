@@ -29,7 +29,8 @@ describe("user registration", () => {
     });
 
     expect(response.statusCode).toBe(201);
-    expect(response.body).toHaveProperty("token");
+    expect(response.body.token).toBeTruthy();
+    expect(response.body.refreshToken).toBeTruthy();
   });
 });
 
@@ -38,7 +39,8 @@ describe("user login", () => {
     const response = await request(app).post("/auth/login").send(USERS[0]);
 
     expect(response.statusCode).toBe(200);
-    expect(response.body).toHaveProperty("token");
+    expect(response.body.token).toBeTruthy();
+    expect(response.body.refreshToken).toBeTruthy();
   });
 });
 
