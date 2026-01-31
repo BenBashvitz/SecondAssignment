@@ -5,12 +5,14 @@ import mongoose from "mongoose";
 import userModel from "../models/userModel";
 import postModel from "../models/postModel";
 import commentModel from "../models/commentModel";
-import { USERS, POSTS, COMMENTS } from "./consts";
+import { POSTS, COMMENTS } from "./consts";
 import { Express } from "express";
-import { cleanupBeforeCommentTests } from "./utils";
+import { cleanupBeforeCommentTests, setupMultipleUsersForTests } from "./utils";
+import Tokens from "../types/tokens";
 
 let app: Express;
-let userIds: string[];
+let userIds: string[] = [];
+let userTokens: Tokens[] = [];
 let postIds: string[];
 
 beforeAll(async () => {
@@ -18,8 +20,10 @@ beforeAll(async () => {
     await userModel.deleteMany();
     await postModel.deleteMany();
 
-    const users = await userModel.create(USERS);
-    userIds = users.map((user) => user._id.toString());
+    const userData = await setupMultipleUsersForTests(app);
+    userTokens = userData.userTokens;
+    userIds = userData.userIds;
+
     const postsWithSenderId = POSTS.map((post, index) => ({
         ...post,
         sender: userIds[index]
@@ -37,14 +41,17 @@ describe("Create comment", () => {
     it("should create a comment successfully", async () => {
         const commentData = {
             ...COMMENTS[0],
-            sender: userIds[0],
             postId: postIds[0],
         };
 
-        const response = await request(app).post("/comment").send(commentData);
+        const response = await request(app)
+            .post("/comment")
+            .set("Authorization", `Bearer ${userTokens[0].token}`)
+            .send(commentData);
 
         expect(response.status).toBe(201);
         expect(response.body).toMatchObject(commentData);
+        expect(response.body.sender).toBe(userIds[0]);
     });
 
     it("should fail to create a comment with missing required fields", async () => {
@@ -52,7 +59,10 @@ describe("Create comment", () => {
             message: "Test Comment",
         };
 
-        const response = await request(app).post("/comment").send(commentData);
+        const response = await request(app)
+            .post("/comment")
+            .set("Authorization", `Bearer ${userTokens[0].token}`)
+            .send(commentData);
 
         expect(response.status).toBe(500);
     });
@@ -83,28 +93,32 @@ describe("Update comment", () => {
     it("should update a comment", async () => {
         const updatedData = {
             ...COMMENTS[1],
-            sender: userIds[1],
             postId: postIds[1],
+            sender: userIds[1],
         };
 
         const response = await request(app)
             .put(`/comment/${commentId}`)
+            .set("Authorization", `Bearer ${userTokens[0].token}`)
             .send(updatedData);
 
         expect(response.status).toBe(201);
-        expect(response.body).toMatchObject(updatedData);
+        expect(response.body.message).toBe(updatedData.message);
+        expect(response.body.postId).toBe(postIds[1]);
+        expect(response.body.sender).toBe(userIds[1]);
     });
 
     it("should return 404 when updating a non-existent comment", async () => {
         const nonExistentId = new mongoose.Types.ObjectId().toString();
         const updatedData = {
             ...COMMENTS[1],
-            sender: userIds[1],
             postId: postIds[1],
+            sender: userIds[1],
         };
 
         const response = await request(app)
             .put(`/comment/${nonExistentId}`)
+            .set("Authorization", `Bearer ${userTokens[0].token}`)
             .send(updatedData);
 
         expect(response.status).toBe(404);
@@ -121,6 +135,7 @@ describe("Update comment", () => {
 
         const response = await request(app)
             .put(`/comment/${commentId}`)
+            .set("Authorization", `Bearer ${userTokens[0].token}`)
             .send(updatedData);
 
         expect(response.status).toBe(500);
@@ -136,14 +151,21 @@ describe("Delete comment", () => {
     });
 
     it("should delete a comment", async () => {
-        const response = await request(app).delete(`/comment/${commentId}`);
+        const response = await request(app)
+            .delete(`/comment/${commentId}`)
+            .set("Authorization", `Bearer ${userTokens[0].token}`)
 
         expect(response.status).toBe(200);
+
+        const deletedComment = await commentModel.findById(commentId);
+        expect(deletedComment).toBeNull();
     });
 
     it("should return 404 when deleting a non-existent comment", async () => {
         const nonExistentId = new mongoose.Types.ObjectId().toString();
-        const response = await request(app).delete(`/comment/${nonExistentId}`);
+        const response = await request(app)
+            .delete(`/comment/${nonExistentId}`)
+            .set("Authorization", `Bearer ${userTokens[0].token}`)
 
         expect(response.status).toBe(404);
     });
@@ -151,7 +173,9 @@ describe("Delete comment", () => {
     it("should return 500 when deleting a comment fails", async () => {
         jest.spyOn(commentModel, "findByIdAndDelete").mockRejectedValueOnce(new Error("Database error"));
 
-        const response = await request(app).delete(`/comment/${commentId}`);
+        const response = await request(app)
+            .delete(`/comment/${commentId}`)
+            .set("Authorization", `Bearer ${userTokens[0].token}`)
 
         expect(response.status).toBe(500);
     });

@@ -4,10 +4,9 @@ import userModel from "../models/userModel";
 import request from "supertest";
 import { Express } from "express";
 import { USERS } from "./consts";
-import { User } from "../types/user";
+import { RawUser } from "../types/user";
 
 let app: Express;
-let user: User;
 
 beforeAll(async () => {
   app = await initApp();
@@ -36,127 +35,135 @@ describe("Create user", () => {
   });
 });
 
-describe("Get users", () => {
-  it("should retrieve all users", async () => {
-    const response = await request(app).get("/user");
-    expect(response.status).toBe(200);
-    expect(response.body.length).toBe(USERS.length);
-
-    user = response.body[0];
-  });
-});
-
-describe("Get user by ID", () => {
-  it("Get user by ID", async () => {
-    const response = await request(app).get(`/user/${user._id}`);
-    expect(response.status).toBe(200);
-    expect(response.body).toMatchObject(user);
-  });
-
-  it("should return 404 if user not found", async () => {
-    const nonExistentId = new mongoose.Types.ObjectId().toString();
-    const response = await request(app).get(`/user/${nonExistentId}`);
-    expect(response.status).toBe(404);
-  });
-
-  it("should return 500 if an error occurs", async () => {
-    jest
-      .spyOn(userModel, "findById")
-      .mockRejectedValueOnce(new Error("Database error"));
-
-    const response = await request(app).get(`/user/${user._id}`);
-    expect(response.status).toBe(500);
-  });
-});
-
-describe("Update user", () => {
-  let userId: string;
+describe("with created user", () => {
+  let user: RawUser;
 
   beforeEach(async () => {
     await userModel.deleteMany();
-    const user = await userModel.create(USERS[0]);
-    userId = user._id.toString();
+
+    user = (await userModel.create(USERS[0])).toObject();
   });
 
-  it("should update a user successfully and return 201", async () => {
-    const updatedData = {
-      username: "updatedUser",
-      email: "updatedEmail",
-      password: "updatedPassword",
-    };
-    const response = await request(app)
-      .put(`/user/${userId}`)
-      .send(updatedData);
+  describe("Get users", () => {
+    it("should retrieve all users", async () => {
+      const response = await request(app).get("/user");
 
-    expect(response.status).toBe(201);
-    expect(response.body.username).toBe(updatedData.username);
+      expect(response.status).toBe(200);
+      expect(response.body.length).toBe(1);
+    });
   });
 
-  it("should return 404 if user not found", async () => {
-    const nonExistentId = new mongoose.Types.ObjectId().toString();
-    const updatedData = {
-      username: "updatedUser",
-      email: "updatedEmail",
-      password: "updatedPassword",
-    };
-    const response = await request(app)
-      .put(`/user/${nonExistentId}`)
-      .send(updatedData);
+  describe("Get user by ID", () => {
+    it("Get user by ID", async () => {
+      const response = await request(app).get(`/user/${user._id.toString()}`);
 
-    expect(response.status).toBe(404);
+      const { _id, ...restUser } = user;
+
+      expect(response.status).toBe(200);
+      expect(response.body).toMatchObject(restUser);
+      expect(response.body._id).toBe(_id.toString());
+    });
+
+    it("should return 404 if user not found", async () => {
+      const nonExistentId = new mongoose.Types.ObjectId().toString();
+
+      const response = await request(app).get(`/user/${nonExistentId}`);
+
+      expect(response.status).toBe(404);
+    });
+
+    it("should return 500 if an error occurs", async () => {
+      jest
+        .spyOn(userModel, "findById")
+        .mockRejectedValueOnce(new Error("Database error"));
+
+      const response = await request(app).get(`/user/${user._id.toString()}`);
+
+      expect(response.status).toBe(500);
+    });
   });
 
-  it("should return 500 if an error occurs", async () => {
-    jest
-      .spyOn(userModel, "findByIdAndUpdate")
-      .mockRejectedValueOnce(new Error("Database error"));
+  describe("Update user", () => {
+    it("should update a user successfully and return 201", async () => {
+      const updatedData = {
+        username: "updatedUser",
+        email: "updatedEmail",
+        password: "updatedPassword",
+      };
+      const response = await request(app)
+        .put(`/user/${user._id.toString()}`)
+        .send(updatedData);
 
-    const updatedData = {
-      username: "updatedUser",
-      email: "updatedEmail",
-      password: "updatedPassword",
-    };
-    const response = await request(app)
-      .put(`/user/${userId}`)
-      .send(updatedData);
+      expect(response.status).toBe(201);
+      expect(response.body).toMatchObject(updatedData);
+      expect(response.body._id).toBe(user._id.toString());
+    });
 
-    expect(response.status).toBe(500);
+    it("should return 404 if user not found", async () => {
+      const nonExistentId = new mongoose.Types.ObjectId().toString();
+      const updatedData = {
+        username: "updatedUser",
+        email: "updatedEmail",
+        password: "updatedPassword",
+      };
+
+      const response = await request(app)
+        .put(`/user/${nonExistentId}`)
+        .send(updatedData);
+
+      expect(response.status).toBe(404);
+    });
+
+    it("should return 500 if an error occurs", async () => {
+      jest
+        .spyOn(userModel, "findByIdAndUpdate")
+        .mockRejectedValueOnce(new Error("Database error"));
+
+      const updatedData = {
+        username: "updatedUser",
+        email: "updatedEmail",
+        password: "updatedPassword",
+      };
+
+      const response = await request(app)
+        .put(`/user/${user._id.toString()}`)
+        .send(updatedData);
+
+      expect(response.status).toBe(500);
+    });
   });
-});
 
-describe("Delete user", () => {
-  let userId: string;
+  describe("Delete user", () => {
+    it("should delete a user successfully and return 200", async () => {
+      const response = await request(app).delete(
+        `/user/${user._id.toString()}`,
+      );
+      expect(response.status).toBe(200);
 
-  beforeEach(async () => {
-    await userModel.deleteMany();
-    const user = await userModel.create(USERS[0]);
-    userId = user._id.toString();
-  });
+      const deletedUser = await userModel.findById(user._id);
 
-  it("should delete a user successfully and return 200", async () => {
-    const response = await request(app).delete(`/user/${userId}`);
+      expect(deletedUser).toBeNull();
+    });
 
-    expect(response.status).toBe(200);
+    it("should return 404 if user not found", async () => {
+      const nonExistentId = new mongoose.Types.ObjectId().toString();
 
-    const deletedUser = await userModel.findById(userId);
-    expect(deletedUser).toBeNull();
-  });
+      const response = await request(app).delete(`/user/${nonExistentId}`);
 
-  it("should return 404 if user not found", async () => {
-    const nonExistentId = new mongoose.Types.ObjectId().toString();
-    const response = await request(app).delete(`/user/${nonExistentId}`);
+      expect(response.status).toBe(404);
+    });
 
-    expect(response.status).toBe(404);
-  });
+    it("should return 500 if an error occurs", async () => {
+      jest
+        .spyOn(userModel, "findByIdAndDelete")
+        .mockRejectedValueOnce(new Error("Database error"));
 
-  it("should return 500 if an error occurs", async () => {
-    jest
-      .spyOn(userModel, "findByIdAndDelete")
-      .mockRejectedValueOnce(new Error("Database error"));
+      const response = await request(app).delete(
+        `/user/${user._id.toString()}`,
+      );
 
-    const response = await request(app).delete(`/user/${userId}`);
-
-    expect(response.status).toBe(500);
+      expect(response.status).toBe(500);
+    });
   });
 });
 
