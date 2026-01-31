@@ -4,7 +4,7 @@ import userModel from "../models/userModel";
 import request from "supertest";
 import { Express } from "express";
 import { USERS } from "./consts";
-import { User } from "../types/user";
+import { RawUser, User } from "../types/user";
 
 let app: Express;
 
@@ -36,14 +36,12 @@ describe("Create user", () => {
 });
 
 describe("with created user", () => {
-  let user: User;
+  let user: RawUser;
 
   beforeEach(async () => {
     await userModel.deleteMany();
 
-    user = await userModel.create(USERS[0]);
-
-    console.log("Created user:", user);
+    user = (await userModel.create(USERS[0])).toObject();
   });
 
   describe("Get users", () => {
@@ -59,8 +57,15 @@ describe("with created user", () => {
     it("Get user by ID", async () => {
       const response = await request(app).get(`/user/${user._id.toString()}`);
 
+      const { _id, ...restUser } = user;
+
+      console.log("response.body:", response.body);
+      console.log("user: ", user);
+      console.log("restUser:", restUser);
+
       expect(response.status).toBe(200);
-      expect(response.body).toMatchObject(user);
+      expect(response.body).toMatchObject(restUser);
+      expect(response.body._id).toBe(_id.toString());
     });
 
     it("should return 404 if user not found", async () => {
@@ -95,6 +100,7 @@ describe("with created user", () => {
 
       expect(response.status).toBe(201);
       expect(response.body).toMatchObject(updatedData);
+      expect(response.body._id).toBe(user._id.toString());
     });
 
     it("should return 404 if user not found", async () => {

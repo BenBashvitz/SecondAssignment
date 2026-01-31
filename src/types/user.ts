@@ -2,9 +2,11 @@ import { Types } from "mongoose";
 
 export type User = {
   email: string;
-  username: string;
   password: string;
-  _id: Types.ObjectId;
+  username: string;
+  _id: string;
 };
+
+export type RawUser = Omit<User, "_id"> & { _id: Types.ObjectId };
 
 export type UserInput = Omit<User, "_id">;
