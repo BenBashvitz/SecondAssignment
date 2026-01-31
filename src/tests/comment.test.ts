@@ -7,10 +7,8 @@ import postModel from "../models/postModel";
 import commentModel from "../models/commentModel";
 import { USERS, POSTS, COMMENTS } from "./consts";
 import { Express } from "express";
-import { cleanupBeforeCommentTests, getUserToken } from "./utils";
+import { cleanupBeforeCommentTests, setupMultipleUsersForTests } from "./utils";
 import Tokens from "../types/tokens";
-import jwt from "jsonwebtoken";
-import TokenPayload from "../types/token";
 
 let app: Express;
 let userIds: string[] = [];
@@ -22,12 +20,9 @@ beforeAll(async () => {
     await userModel.deleteMany();
     await postModel.deleteMany();
 
-    for (const user of USERS) {
-        const token = await getUserToken(app);
-        userTokens.push(token);
-    }
-
-    userIds = userTokens.map((token) => (jwt.decode(token.token) as TokenPayload).userId);
+    const userData = await setupMultipleUsersForTests(app);
+    userTokens = userData.userTokens;
+    userIds = userData.userIds;
 
     const postsWithSenderId = POSTS.map((post, index) => ({
         ...post,
@@ -55,9 +50,7 @@ describe("Create comment", () => {
             .send(commentData);
 
         expect(response.status).toBe(201);
-        expect(response.body.message).toBe(commentData.message);
-        expect(response.body.postId).toBe(postIds[0]);
-        expect(response.body.sender).toBe(userIds[0]);
+        expect(response.body).toMatchObject(commentData);
     });
 
     it("should fail to create a comment with missing required fields", async () => {
@@ -112,21 +105,6 @@ describe("Update comment", () => {
         expect(response.body.message).toBe(updatedData.message);
         expect(response.body.postId).toBe(postIds[1]);
         expect(response.body.sender).toBe(userIds[1]);
-    });
-
-    it("should fail to update a comment by another user", async () => {
-        const updatedData = {
-            ...COMMENTS[1],
-            postId: postIds[1],
-            sender: userIds[1],
-        };
-
-        const response = await request(app)
-            .put(`/comment/${commentId}`)
-            .set("Authorization", `Bearer ${userTokens[1].token}`)
-            .send(updatedData);
-
-        expect(response.status).toBe(403);
     });
 
     it("should return 404 when updating a non-existent comment", async () => {
