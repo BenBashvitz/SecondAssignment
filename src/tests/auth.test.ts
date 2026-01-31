@@ -4,7 +4,7 @@ import request from "supertest";
 import initApp from "../index";
 import commentModel from "../models/commentModel";
 import postModel from "../models/postModel";
-import authModel from "../models/userModel";
+import userModel from "../models/userModel";
 import Tokens from "../types/tokens";
 import { COMMENTS, POSTS, USERS } from "./consts";
 import {
@@ -17,7 +17,7 @@ let app: Express;
 
 beforeAll(async () => {
   app = await initApp();
-  await authModel.deleteMany();
+  await userModel.deleteMany();
 });
 
 describe("user registration", () => {
@@ -29,7 +29,8 @@ describe("user registration", () => {
     });
 
     expect(response.statusCode).toBe(201);
-    expect(response.body).toHaveProperty("token");
+    expect(response.body.token).toBeTruthy();
+    expect(response.body.refreshToken).toBeTruthy();
   });
 });
 
@@ -38,7 +39,8 @@ describe("user login", () => {
     const response = await request(app).post("/auth/login").send(USERS[0]);
 
     expect(response.statusCode).toBe(200);
-    expect(response.body).toHaveProperty("token");
+    expect(response.body.token).toBeTruthy();
+    expect(response.body.refreshToken).toBeTruthy();
   });
 });
 
@@ -47,7 +49,6 @@ describe("Operations with accesses token", () => {
   let userIds: string[] = [];
 
   beforeEach(async () => {
-    await authModel.deleteMany();
     const userData = await setupMultipleUsersForTests(app);
     userTokens = userData.userTokens;
     userIds = userData.userIds;
@@ -202,6 +203,82 @@ describe("Operations with accesses token", () => {
     });
   });
 });
+
+describe("Refresh token", () => {
+  let userTokens: Tokens[] = [];
+  let userIds: string[] = [];
+
+  beforeEach(async () => {
+    const userData = await setupMultipleUsersForTests(app);
+    userTokens = userData.userTokens;
+    userIds = userData.userIds;
+  });
+
+  it("should fail to create a post with expired token", async () => {
+    await new Promise((r) => setTimeout(r, 5000));
+
+    const response = await request(app)
+      .post("/post")
+      .set("Authorization", `Bearer ${userTokens[0].token}`)
+      .send(POSTS[0]);
+    expect(response.statusCode).toBe(401);
+
+    const refreshTokenResponse = await request(app)
+      .post("/auth/refresh-token")
+      .send({
+        refreshToken: userTokens[0].refreshToken,
+      });
+
+    expect(refreshTokenResponse.statusCode).toBe(200);
+    expect(refreshTokenResponse.body.token).toBeTruthy();
+    expect(refreshTokenResponse.body.refreshToken).toBeTruthy();
+
+    userTokens[0].token = refreshTokenResponse.body.token;
+    userTokens[0].refreshToken = refreshTokenResponse.body.refreshToken;
+
+    const newPostResponse = await request(app)
+      .post("/post")
+      .send(POSTS[1])
+      .set("Authorization", `Bearer ${userTokens[0].token}`);
+
+    expect(newPostResponse.statusCode).toBe(201);
+    expect(newPostResponse.body).toMatchObject(POSTS[1]);
+    expect(newPostResponse.body.sender).toBe(userIds[0]);
+
+  }, 10000);
+
+  it("should fail to refresh token with double use", async () => {
+    await new Promise((r) => setTimeout(r, 1000));
+
+    const refreshTokenResponse = await request(app)
+      .post("/auth/refresh-token")
+      .send({
+        refreshToken: userTokens[0].refreshToken,
+      });
+
+    expect(refreshTokenResponse.statusCode).toBe(200);
+    expect(refreshTokenResponse.body.token).toBeTruthy();
+    expect(refreshTokenResponse.body.refreshToken).toBeTruthy();
+
+    const newRefreshToken = refreshTokenResponse.body.refreshToken;
+
+    const secondRefreshTokenResponse = await request(app)
+      .post("/auth/refresh-token")
+      .send({
+        refreshToken: userTokens[0].refreshToken,
+      });
+
+    expect(secondRefreshTokenResponse.statusCode).toBe(401);
+
+    const thirdRefreshTokenResponse = await request(app)
+      .post("/auth/refresh-token")
+      .send({
+        refreshToken: newRefreshToken,
+      });
+
+    expect(thirdRefreshTokenResponse.statusCode).toBe(401);
+  });
+})
 
 afterAll(async () => {
   await mongoose.connection.close();

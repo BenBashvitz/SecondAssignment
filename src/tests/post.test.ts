@@ -3,9 +3,10 @@ import mongoose from "mongoose";
 import request from "supertest";
 import initApp from "../index";
 import postModel from "../models/postModel";
+import userModel from "../models/userModel";
 import { Post } from "../types/post";
 import Tokens from "../types/tokens";
-import { POSTS } from "./consts";
+import { POSTS, USERS } from "./consts";
 import { getUserToken } from "./utils";
 import jwt from "jsonwebtoken";
 import TokenPayload from "../types/token";
@@ -18,9 +19,9 @@ beforeAll(async () => {
   app = await initApp();
 
   await postModel.deleteMany();
+  await userModel.deleteMany();
 
-  userTokens = await getUserToken(app);
-
+  userTokens = await getUserToken(app, USERS[0]);
   userId = (jwt.decode(userTokens.token) as TokenPayload).userId;
 });
 

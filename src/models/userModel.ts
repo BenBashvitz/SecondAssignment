@@ -15,6 +15,9 @@ const userSchema = new mongoose.Schema<RawUser>({
     type: String,
     required: true,
   },
+  refreshTokens: {
+    type: [String],
+  },
 });
 
 export default mongoose.model("user", userSchema);

@@ -5,6 +5,7 @@ export type User = {
   password: string;
   username: string;
   _id: string;
+  refreshTokens: string[];
 };
 
 export type RawUser = Omit<User, "_id"> & { _id: Types.ObjectId };

@@ -105,4 +105,45 @@ router.post("/register", authController.register);
  */
 router.post("/login", authController.login);
 
+/**
+* @swagger
+* /auth/refresh-token:
+*   post:
+*     summary: Refresh access token
+*     tags: [Auth]
+*     requestBody:
+*       required: true
+*       content:
+*         application/json:
+*           schema:
+*             type: object
+*             required:
+*               - refreshToken
+*             properties:
+*               refreshToken:
+*                 type: string
+*                 example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+*     responses:
+*       200:
+*         description: Token refreshed successfully
+*         content:
+*           application/json:
+*             schema:
+*               $ref: '#/components/schemas/LoginResponse'
+*       401:
+*         description: Unauthorized - Invalid refresh token
+*         content:
+*           application/json:
+*             schema:
+*               $ref: '#/components/schemas/Error'
+*               $ref: '#/components/schemas/LoginResponse'
+*       500:
+*         description: Internal Server Error
+*         content:
+*           application/json:
+*             schema:
+*               $ref: '#/components/schemas/Error'
+*/
+router.post("/refresh-token", authController.refreshToken);
+
 export default router;

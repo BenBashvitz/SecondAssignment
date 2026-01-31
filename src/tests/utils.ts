@@ -7,6 +7,7 @@ import Tokens from "../types/tokens";
 import { USERS } from "./consts";
 import TokenPayload from "../types/token";
 import jwt from "jsonwebtoken";
+import { UserInput } from "../types/user";
 import { Post, PostInput } from "../types/post";
 
 export const cleanupBeforeCommentTests = async (
@@ -40,31 +41,18 @@ export const cleanupBeforePostTests = async (
 };
 
 export const setupMultipleUsersForTests = async (app: Express) => {
-  const userTokens: Tokens[] = [];
-  const userIds: string[] = [];
+  await userModel.deleteMany();
 
-  for (let i = 0; i < USERS.length; i++) {
-    const token = await getUserToken(app);
-    userTokens.push(token);
-  }
-
-  for (const token of userTokens) {
-    userIds.push((jwt.decode(token.token) as TokenPayload).userId);
-  }
+  const userTokens: Tokens[] = await Promise.all(USERS.map(user => getUserToken(app, user)));
+  const userIds: string[] = userTokens.map(token => (jwt.decode(token.token) as TokenPayload).userId);
 
   return { userTokens, userIds };
 };
 
-export const getUserToken = async (app: Express): Promise<Tokens> => {
-  const email = "test@example.com";
-  const password = "securePassword123";
-  const username = "testuser";
-
-  await userModel.deleteMany();
-
+export const getUserToken = async (app: Express, user: UserInput): Promise<Tokens> => {
   const response = await request(app)
     .post("/auth/register")
-    .send({ email, password, username });
+    .send(user);
 
   return response.body;
 };
