@@ -230,8 +230,8 @@ describe("Refresh token", () => {
       });
 
     expect(refreshTokenResponse.statusCode).toBe(200);
-    expect(refreshTokenResponse.body.token).not.toBeNull();
-    expect(refreshTokenResponse.body.refreshToken).not.toBeNull();
+    expect(refreshTokenResponse.body.token).toBeTruthy();
+    expect(refreshTokenResponse.body.refreshToken).toBeTruthy();
 
     userTokens[0].token = refreshTokenResponse.body.token;
     userTokens[0].refreshToken = refreshTokenResponse.body.refreshToken;
@@ -257,8 +257,8 @@ describe("Refresh token", () => {
       });
 
     expect(refreshTokenResponse.statusCode).toBe(200);
-    expect(refreshTokenResponse.body.token).not.toBeNull();
-    expect(refreshTokenResponse.body.refreshToken).not.toBeNull();
+    expect(refreshTokenResponse.body.token).toBeTruthy();
+    expect(refreshTokenResponse.body.refreshToken).toBeTruthy();
 
     const newRefreshToken = refreshTokenResponse.body.refreshToken;
 
