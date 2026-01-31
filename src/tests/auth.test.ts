@@ -294,8 +294,8 @@ describe("User logout", () => {
       .set("Authorization", `Bearer ${userTokens[0].token}`);
 
     expect(response.statusCode).toBe(200);
-    expect(response.body.token).toBeFalsy();
-    expect(response.body.refreshToken).toBeFalsy();
+    expect(response.body.token).toBeNull();
+    expect(response.body.refreshToken).toBeNull();
   });
 
   test("should fail to refresh token after logout", async () => {
@@ -304,8 +304,9 @@ describe("User logout", () => {
       .set("Authorization", `Bearer ${userTokens[0].token}`);
 
     const response = await request(app)
-      .post("/auth/refresh-token")
-      .set("Authorization", `Bearer ${userTokens[0].token}`);
+      .post("/auth/refresh-token").send({
+        refreshToken: userTokens[0].refreshToken,
+      })
 
     expect(response.statusCode).toBe(401);
   });
@@ -315,7 +316,7 @@ describe("User logout", () => {
 
     const response = await request(app)
       .post("/auth/logout")
-      .set("Authorization", `Bearer ${userTokens[0].token}`)
+      .set("Authorization", `Bearer ${userTokens[0].refreshToken}`)
 
     expect(response.status).toBe(500);
   })

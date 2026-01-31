@@ -136,7 +136,7 @@ router.post("/login", authController.login);
 *         content:
 *           application/json:
 *             schema:
-*               $ref: '#/components/schemas/Error'
+*               $ref: '#/components/schemas/LoginResponse'
 *       500:
 *         description: Internal Server Error
 *         content:
@@ -160,14 +160,7 @@ router.post("/refresh-token", authController.refreshToken);
 *         content:
 *           application/json:
 *             schema:
-*               type: object
-*               properties:
-*                 refreshToken:
-*                   type: string
-*                   example: null
-*                 token:
-*                   type: string
-*                   example: null
+*               $ref: '#/components/schemas/LoginResponse'
 *       500:
 *         description: Internal Server Error
 *         content:
