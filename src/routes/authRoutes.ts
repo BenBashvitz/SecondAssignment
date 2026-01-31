@@ -152,18 +152,8 @@ router.post("/refresh-token", authController.refreshToken);
 *   post:
 *     summary: Logout a user
 *     tags: [Auth]
-*     requestBody:
-*       required: true
-*       content:
-*         application/json:
-*           schema:
-*             type: object
-*             required:
-*               - refreshToken
-*             properties:
-*               refreshToken:
-*                 type: string
-*                 example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+*     security:
+*       - bearerAuth: []
 *     responses:
 *       200:
 *         description: Logged out successfully
